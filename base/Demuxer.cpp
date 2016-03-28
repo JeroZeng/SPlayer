@@ -1,12 +1,37 @@
 #include <stdio.h>
-#include "demuxer.h"
+#include "Demuxer.h"
 
 Demuxer::~Demuxer(){
 }
 
-int Demuxer::open(){
+int Demuxer::Open(){
 
-    printf("---> open file.\n");
     return 0;
 }
 
+int Demuxer::Start(){
+
+    m_sQueue = new SQueue();
+    pthread_create(&m_pThreadDemuxer, NULL, Demuxer::Loop, (void*)this);
+    pthread_join(m_pThreadDemuxer, NULL);
+
+    return 0;
+}
+
+int Demuxer::GetOneFrame(char *data){
+    return 0;
+}
+
+void* Demuxer::Loop(void *arg){
+
+    Demuxer *demuxer = (Demuxer*)arg;
+    char *dt;
+    int dt_size = 0;
+    while((dt_size = demuxer->GetOneFrame(dt)) > 0){
+        SData *data = new SData();
+        data->num = dt_size;
+        printf("-------->%d\n", data->num);
+        demuxer->m_sQueue->Push(data);
+    }
+    return NULL;
+}

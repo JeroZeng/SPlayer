@@ -7,5 +7,6 @@ public:
 public:
     SPlayer(const char* name);
     ~SPlayer();
-    int play();
+    void Init();
+    int Play();
 };

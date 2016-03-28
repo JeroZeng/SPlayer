@@ -10,8 +10,12 @@ SPlayer::~SPlayer(){
     delete demuxer;
 }
 
-int SPlayer::play(){
-    demuxer->open();
+void SPlayer::Init(){
+    demuxer->Open();
+}
+
+int SPlayer::Play(){
+    demuxer->Start();
     return 0;
 }
 
