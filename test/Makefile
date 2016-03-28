@@ -1,4 +1,4 @@
 all : testQueue
 
-testQueue : testQueue.cpp ../base/queue.cpp
-	clang++ testQueue.cpp ../base/queue.cpp -o testQueue
+testQueue : testQueue.cpp ../base/Queue.cpp
+	clang++ testQueue.cpp ../base/Queue.cpp -o testQueue

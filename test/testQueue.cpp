@@ -1,4 +1,4 @@
-#include "../base/queue.h"
+#include "../base/Queue.h"
 
 void* func1(void *arg);
 void* func2(void *arg);
