@@ -12,6 +12,7 @@ public:
     virtual int Open();
     virtual int Start();
     virtual int GetOneFrame(char *data);
+    int WaitThread();
 private:
     static void* Loop(void *arg);
 private:
