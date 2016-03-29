@@ -6,8 +6,13 @@
 class Mp4Demuxer: public Demuxer
 {
 public:
+    Mp4Demuxer();
+    ~Mp4Demuxer();
     int Open();
     int GetOneFrame(char *data);
+
+private:
+    FILE *fp;
 };
 
 #endif//_MP4_DEMUXER_
