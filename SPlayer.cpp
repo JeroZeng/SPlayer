@@ -15,7 +15,7 @@ SPlayer::~SPlayer(){
 }
 
 void SPlayer::Init(){
-    demuxer->Open();
+    demuxer->Open("/dev/random");
 }
 
 int SPlayer::Play(){

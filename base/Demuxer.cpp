@@ -4,7 +4,7 @@
 Demuxer::~Demuxer(){
 }
 
-int Demuxer::Open(){
+int Demuxer::Open(const char *url){
 
     return 0;
 }
@@ -28,6 +28,7 @@ void* Demuxer::Loop(void *arg){
     int dt_size = demuxer->GetOneFrame(dt);
     while(dt_size > 0){
         SData *data = new SData();
+        data->data = dt;
         data->size = dt_size;
         demuxer->m_sQueue->Push(data);
         dt_size = demuxer->GetOneFrame(dt);

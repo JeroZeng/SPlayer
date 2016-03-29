@@ -3,12 +3,11 @@
 
 #include "../base/Demuxer.h"
 
-class Mp4Demuxer: public Demuxer
-{
+class Mp4Demuxer: public Demuxer {
 public:
     Mp4Demuxer();
     ~Mp4Demuxer();
-    int Open();
+    int Open(const char *url);
     int GetOneFrame(char *data);
 
 private:

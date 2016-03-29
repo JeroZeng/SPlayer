@@ -30,7 +30,7 @@ void* func1(void *arg){
         queue->Push(data);
         printf("-------->%d\n", num);
         num++;
-        sleep(1);
+        sleep(5);
     }
     return NULL;
 }
@@ -49,7 +49,7 @@ void* func2(void *arg){
         } else {
             printf("+++++++++++++\n");
         }
-        sleep(2);
+        sleep(1);
     }
     return NULL;
 }

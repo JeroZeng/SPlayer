@@ -43,6 +43,7 @@ void* Decoder::Loop(void *arg){
     while(data->size > 0){
         SData *rData = new SData();
         rData->size = data->size << 1;
+        rData->data = data->data;
         decoder->m_sRenderQueue->Push(rData);
         delete data;
         data = decoder->m_sQueue->Pop();

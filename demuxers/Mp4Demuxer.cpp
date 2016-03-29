@@ -11,8 +11,8 @@ Mp4Demuxer::~Mp4Demuxer(){
     }
 }
 
-int Mp4Demuxer::Open(){
-    fp = fopen("/dev/random", "r");
+int Mp4Demuxer::Open(const char *url){
+    fp = fopen(url, "r");
     if (fp) {
         printf("------>open mp4\n");
     }

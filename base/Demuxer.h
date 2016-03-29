@@ -9,7 +9,7 @@ public:
     SQueue *m_sQueue;
 public:
     ~Demuxer();
-    virtual int Open();
+    virtual int Open(const char *url);
     virtual int Start();
     virtual int GetOneFrame(char *data);
     int WaitStreamEnd();
