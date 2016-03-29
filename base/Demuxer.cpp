@@ -39,7 +39,7 @@ void* Demuxer::Loop(void *arg){
     return NULL;
 }
 
-int Demuxer::WaitThread(){
+int Demuxer::WaitStreamEnd(){
 
     pthread_join(m_pThreadDemuxer, NULL);
     return 0;

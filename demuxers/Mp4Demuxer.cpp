@@ -27,6 +27,6 @@ int Mp4Demuxer::GetOneFrame(char *data){
         value |= fgetc(fp);
     }
     i = value % 20;
-    printf("-------->%d\n", i);
+    printf("%d<--------\n", i);
     return i;
 }

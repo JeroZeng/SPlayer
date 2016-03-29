@@ -5,11 +5,13 @@ SPlayer::SPlayer(const char *url){
     //demuxer = new Demuxer();
     demuxer = new Mp4Demuxer();
     decoder = new Decoder();
+    render  = new Render();
 }
 
 SPlayer::~SPlayer(){
     delete demuxer;
     delete decoder;
+    delete render;
 }
 
 void SPlayer::Init(){
@@ -19,8 +21,10 @@ void SPlayer::Init(){
 int SPlayer::Play(){
     demuxer->Start();
     decoder->Start(demuxer->m_sQueue);
-    demuxer->WaitThread();
-    decoder->WaitThread();
+    render->Start(decoder->m_sRenderQueue);
+    demuxer->WaitStreamEnd();
+    decoder->WaitStreamEnd();
+    render->WaitStreamEnd();
     return 0;
 }
 
