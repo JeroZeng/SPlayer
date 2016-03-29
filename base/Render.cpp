@@ -1,5 +1,9 @@
 #include "Render.h"
 
+RenderQueue::RenderQueue(int len):
+    SQueue(len) {
+}
+
 Render::Render() {
 
 }
@@ -37,12 +41,12 @@ void* Render::Loop(void *arg) {
 
     Render *render = (Render*)arg;
     SData *data = render->m_sRenderQueue->Pop();
-    while(data->num > 0) {
-        printf("-------->%d\n", data->num);
+    while(data->size > 0) {
+        printf("-------->%d\n", data->size);
         delete data;
         data = render->m_sRenderQueue->Pop();
     }
-    if (data->num == 0) {
+    if (data->size == 0) {
         delete data;
     }
     return NULL;

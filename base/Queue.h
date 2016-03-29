@@ -22,16 +22,21 @@ private:
     SLock &lc;
 };
 
-class SData{
+class SData {
 public:
-    SData *prev;
-    SData *next;
-    int num;
+    char *data;
+    int   size;
+};
+
+class SNode{
+public:
+    SData *data;
+    SNode *next;
 };
 
 class SQueue{
 public:
-    SQueue();
+    SQueue(int len);
     ~SQueue();
 
     void Push(SData* data);
@@ -41,8 +46,9 @@ public:
 private:
     SLock m_sLock;
     SCond m_sCond;
-    SData *m_sHead;
-    SData *m_sTail;
+    SNode *m_sWriter;
+    SNode *m_sReader;
+    SNode *m_sXer;
     int m_iSize;
 };
 

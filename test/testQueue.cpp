@@ -5,7 +5,7 @@ void* func2(void *arg);
 
 int main(int argc, char *argv[]){
 
-    SQueue *queue = new SQueue();
+    SQueue *queue = new SQueue(10);
     pthread_t p1;
     pthread_t p2;
 
@@ -26,7 +26,7 @@ void* func1(void *arg){
     int num = 0;
     while (num < 20) {
         SData *data = new SData();
-        data->num = num;
+        data->size = num;
         queue->Push(data);
         printf("-------->%d\n", num);
         num++;
@@ -43,7 +43,7 @@ void* func2(void *arg){
     while (num != 19) {
         data = queue->Pop();
         if (data != NULL) {
-            num = data->num;
+            num = data->size;
             printf("%d<--------\n", num);
             delete data;
         } else {

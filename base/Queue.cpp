@@ -1,12 +1,17 @@
 #include "Queue.h"
 
-SQueue::SQueue() {
-
+SQueue::SQueue(int len) {
+    int i = 0;
     pthread_mutex_init(&m_sLock, NULL);
     pthread_cond_init(&m_sCond, NULL);
     pthread_mutex_lock(&m_sLock);
-    m_sHead = NULL;
-    m_sTail = NULL;
+    m_sXer = new SNode();
+    m_sWriter = m_sReader = m_sXer;
+    for(i=1; i<len; i++) {
+        m_sXer->next = new SNode();
+        m_sXer = m_sXer->next;
+    }
+    m_sXer->next = m_sWriter;
     pthread_mutex_unlock(&m_sLock);
 }
 
@@ -19,41 +24,22 @@ SQueue::~SQueue() {
 
 void SQueue::Push(SData *data) {
     CLock lock(m_sLock);
-    while(m_iSize == MAX_QUEUE_LENGTH) {
+    while(m_sWriter->next == m_sReader) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
-    if (m_iSize == 0) {
-        data->prev = NULL;
-        data->next = NULL;
-        m_sHead = data;
-        m_sTail = data;
-    } else {
-        m_sHead->prev = data;
-        data->next = m_sHead;
-        data->prev = NULL;
-        m_sHead = data;
-    }
-    m_iSize++;
+    m_sWriter->data = data;
+    m_sWriter = m_sWriter->next;
     pthread_cond_signal(&m_sCond);
 }
 
 SData* SQueue::Pop() {
     CLock lock(m_sLock);
-    while(m_iSize == 0) {
+    while(m_sReader == m_sWriter) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
-    SData *data = NULL;
-    if (m_iSize > 0) {
-        data = m_sTail;
-        if (m_sTail->prev != NULL) {
-            m_sTail = m_sTail->prev;
-            m_sTail->next = NULL;
-        } else {
-            m_sTail = NULL;
-        }
-        m_iSize--;
-        pthread_cond_signal(&m_sCond);
-    }
+    SData *data = m_sReader->data;
+    m_sReader = m_sReader->next;
+    pthread_cond_signal(&m_sCond);
     return data;
 }
 

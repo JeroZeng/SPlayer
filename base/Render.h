@@ -4,6 +4,8 @@
 #include "Queue.h"
 
 class RenderQueue : public SQueue {
+public:
+    RenderQueue(int len);
 
 };
 
