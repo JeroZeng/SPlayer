@@ -10,8 +10,8 @@ public:
 public:
     ~Demuxer();
     virtual int Open(const char *url);
-    virtual int Start();
     virtual int GetOneFrame(char *data);
+    int Start();
     int WaitStreamEnd();
 private:
     static void* Loop(void *arg);

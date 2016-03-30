@@ -1,9 +1,11 @@
 #include "SPlayer.h"
 #include "demuxers/Mp4Demuxer.h"
+#include "demuxers/RawYUV.h"
 
 SPlayer::SPlayer(const char *url){
     //demuxer = new Demuxer();
-    demuxer = new Mp4Demuxer();
+    //demuxer = new Mp4Demuxer();
+    demuxer = new RawYUV();
     decoder = new Decoder();
     render  = new Render();
 }
@@ -15,7 +17,7 @@ SPlayer::~SPlayer(){
 }
 
 void SPlayer::Init(){
-    demuxer->Open("/dev/random");
+    demuxer->Open("../flower_352_288.yuv");
 }
 
 int SPlayer::Play(){
