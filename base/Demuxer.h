@@ -13,9 +13,12 @@ public:
     virtual int GetOneFrame(char *data);
     int Start();
     int WaitStreamEnd();
+    void SetFrameSize(int size);
+    int GetFrameSize();
 private:
     static void* Loop(void *arg);
 private:
+    int m_iFrameSize;
     pthread_t m_pThreadDemuxer;
 
 };

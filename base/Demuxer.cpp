@@ -17,7 +17,7 @@ int Demuxer::Start(){
     return 0;
 }
 
-int Demuxer::GetOneFrame(char *data){
+int Demuxer::GetOneFrame(char *bucket){
     return 0;
 }
 
@@ -27,15 +27,15 @@ void* Demuxer::Loop(void *arg){
     char *dt;
     int dt_size = demuxer->GetOneFrame(dt);
     while(dt_size > 0){
-        SData *data = new SData();
-        data->data = dt;
-        data->size = dt_size;
-        demuxer->m_sQueue->Push(data);
+        SBucket *bucket = new SBucket();
+        bucket->data = dt;
+        bucket->size = dt_size;
+        demuxer->m_sQueue->Push(bucket);
         dt_size = demuxer->GetOneFrame(dt);
     }
-    SData *data = new SData();
-    data->size = 0;
-    demuxer->m_sQueue->Push(data);
+    SBucket *bucket = new SBucket();
+    bucket->size = 0;
+    demuxer->m_sQueue->Push(bucket);
     printf("------>END<------\n");
     return NULL;
 }
@@ -44,4 +44,12 @@ int Demuxer::WaitStreamEnd(){
 
     pthread_join(m_pThreadDemuxer, NULL);
     return 0;
+}
+
+void Demuxer::SetFrameSize(int size) {
+    m_iFrameSize = size;
+}
+
+int Demuxer::GetFrameSize() {
+    return m_iFrameSize;
 }

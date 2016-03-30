@@ -22,7 +22,7 @@ private:
     SLock &lc;
 };
 
-class SData {
+class SBucket {
 public:
     char *data;
     int   size;
@@ -30,7 +30,7 @@ public:
 
 class SNode{
 public:
-    SData *data;
+    SBucket *bucket;
     SNode *next;
 };
 
@@ -39,8 +39,8 @@ public:
     SQueue(int len);
     ~SQueue();
 
-    void Push(SData* data);
-    SData* Pop();
+    void Push(SBucket* bucket);
+    SBucket* Pop();
     void Flush(); 
 
 private:
@@ -48,8 +48,6 @@ private:
     SCond m_sCond;
     SNode *m_sWriter;
     SNode *m_sReader;
-    SNode *m_sXer;
-    int m_iSize;
 };
 
 #endif//_QUEUE_H_

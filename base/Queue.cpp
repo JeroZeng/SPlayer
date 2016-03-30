@@ -5,42 +5,42 @@ SQueue::SQueue(int len) {
     pthread_mutex_init(&m_sLock, NULL);
     pthread_cond_init(&m_sCond, NULL);
     pthread_mutex_lock(&m_sLock);
-    m_sXer = new SNode();
-    m_sWriter = m_sReader = m_sXer;
+    SNode *xNode = new SNode();
+    m_sWriter = m_sReader = xNode;
     for(i=1; i<len; i++) {
-        m_sXer->next = new SNode();
-        m_sXer = m_sXer->next;
+        xNode->next = new SNode();
+        xNode = xNode->next;
     }
-    m_sXer->next = m_sWriter;
+    xNode->next = m_sWriter;
     pthread_mutex_unlock(&m_sLock);
 }
 
 SQueue::~SQueue() {
     //CLock lock(&m_sLock);
-    //TODO Release SDatas if exist.
+    //TODO Release SBuckets if exist.
     pthread_mutex_destroy(&m_sLock);
     pthread_cond_destroy(&m_sCond);
 }
 
-void SQueue::Push(SData *data) {
+void SQueue::Push(SBucket *bucket) {
     CLock lock(m_sLock);
     while(m_sWriter->next == m_sReader) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
-    m_sWriter->data = data;
+    m_sWriter->bucket = bucket;
     m_sWriter = m_sWriter->next;
     pthread_cond_signal(&m_sCond);
 }
 
-SData* SQueue::Pop() {
+SBucket* SQueue::Pop() {
     CLock lock(m_sLock);
     while(m_sReader == m_sWriter) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
-    SData *data = m_sReader->data;
+    SBucket *bucket = m_sReader->bucket;
     m_sReader = m_sReader->next;
     pthread_cond_signal(&m_sCond);
-    return data;
+    return bucket;
 }
 
 void SQueue::Flush() {
