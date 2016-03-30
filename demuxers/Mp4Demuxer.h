@@ -8,7 +8,7 @@ public:
     Mp4Demuxer();
     ~Mp4Demuxer();
     int Open(const char *url);
-    int GetOneFrame(char *data);
+    int GetOneFrame(SBucket *data);
 
 private:
     FILE *fp;

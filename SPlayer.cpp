@@ -4,8 +4,8 @@
 
 SPlayer::SPlayer(const char *url){
     //demuxer = new Demuxer();
-    //demuxer = new Mp4Demuxer();
-    demuxer = new RawYUV();
+    demuxer = new Mp4Demuxer();
+    //demuxer = new RawYUV();
     decoder = new Decoder();
     render  = new Render();
 }

@@ -19,7 +19,7 @@ int Mp4Demuxer::Open(const char *url){
     return 0;
 }
 
-int Mp4Demuxer::GetOneFrame(char *data){
+int Mp4Demuxer::GetOneFrame(SBucket *bucket){
     uint64_t value = 0;
     int i;
     for (i=0; i<sizeof(value); i++) {
@@ -27,6 +27,7 @@ int Mp4Demuxer::GetOneFrame(char *data){
         value |= fgetc(fp);
     }
     i = value % 20;
+    bucket->size = i;
     printf("%d<--------\n", i);
     return i;
 }

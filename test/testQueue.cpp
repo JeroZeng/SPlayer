@@ -30,8 +30,10 @@ void* func1(void *arg){
         printf("-------->%d\n", bucket->size);
         queue->Push(&bucket);
         num++;
-        sleep(2);
+        //sleep(1);
     }
+    bucket->size = 20;
+    queue->Push(&bucket);
     delete bucket;
     return NULL;
 }
@@ -41,10 +43,12 @@ void* func2(void *arg){
     SQueue *queue = (SQueue*) (arg);
     int num = 0;
     SBucket *bucket = new SBucket();
-    while (num != 19) {
-        queue->Pop(&bucket);
+    queue->Pop(&bucket);
+    while (bucket->size < 20) {
         printf("%d<--------\n", bucket->size);
-        sleep(1);
+        queue->Pop(&bucket);
+        num++;
+        //sleep(1);
     }
     delete bucket;
     return NULL;

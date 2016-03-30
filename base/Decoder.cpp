@@ -39,18 +39,18 @@ void* Decoder::Loop(void *arg){
 
     printf("------------in decoder---------------\n");
     Decoder *decoder = (Decoder*)arg;
-    SBucket bucket;
+    SBucket *bucket;
     decoder->m_sQueue->Pop(&bucket);
-    while(bucket.size > 0){
-        SBucket *rData = new SBucket();
-        rData->size = bucket.size << 1;
-        rData->data = bucket.data;
+    SBucket *rData = new SBucket();
+    while(bucket->size > 0){
+        rData->size = bucket->size << 1;
+        rData->data = bucket->data;
+        decoder->m_sRenderQueue->Push(&rData);
         decoder->m_sQueue->Pop(&bucket);
     }
-    if (bucket.size == 0) {
-        SBucket *rData = new SBucket();
+    if (bucket->size == 0) {
         rData->size = 0;
-        decoder->m_sRenderQueue->Push(rData);
+        decoder->m_sRenderQueue->Push(&rData);
     }
     return NULL;
 }

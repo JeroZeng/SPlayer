@@ -30,16 +30,17 @@ void* Demuxer::Loop(void *arg){
     char *data[8];
     int i = 0;
     data[i] = (char*)MALLOC(BUFFER_8M * sizeof(char));
-    SBucket bucket;
-    bucket.data = data[i];
-    int nextFrameSize = demuxer->GetOneFrame(&bucket);
+    SBucket *bucket = new SBucket;
+    //bucket->data = data[i];
+    int nextFrameSize = demuxer->GetOneFrame(bucket);
     while(nextFrameSize > 0){
         demuxer->m_sQueue->Push(&bucket);
-        nextFrameSize = demuxer->GetOneFrame(&bucket);
+        nextFrameSize = demuxer->GetOneFrame(bucket);
     }
-    bucket.size = 0;
+    bucket->size = 0;
     demuxer->m_sQueue->Push(&bucket);
     printf("------>END<------\n");
+    delete bucket;
     return NULL;
 }
 

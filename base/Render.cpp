@@ -40,11 +40,11 @@ int Render::Draw(char *yuv, int width, int height) {
 void* Render::Loop(void *arg) {
 
     Render *render = (Render*)arg;
-    SBucket *bucket = render->m_sRenderQueue->Pop();
+    SBucket *bucket = new SBucket();
+    render->m_sRenderQueue->Pop(&bucket);
     while(bucket->size > 0) {
         printf("-------->%d\n", bucket->size);
-        delete bucket;
-        bucket = render->m_sRenderQueue->Pop();
+        render->m_sRenderQueue->Pop(&bucket);
     }
     if (bucket->size == 0) {
         delete bucket;
