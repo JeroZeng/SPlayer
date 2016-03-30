@@ -32,6 +32,9 @@ class SNode{
 public:
     SBucket *bucket;
     SNode *next;
+public:
+    SNode();
+    ~SNode();
 };
 
 class SQueue{
@@ -39,8 +42,8 @@ public:
     SQueue(int len);
     ~SQueue();
 
-    void Push(SBucket *bucket);
-    void Pop(SBucket *bucket);
+    void Push(SBucket **bucket);
+    void Pop(SBucket **bucket);
     void Flush(); 
 
 private:

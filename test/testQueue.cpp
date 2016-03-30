@@ -27,7 +27,8 @@ void* func1(void *arg){
     SBucket *bucket = new SBucket();
     while (num < 20) {
         bucket->size = num;
-        queue->Push(bucket);
+        printf("-------->%d\n", bucket->size);
+        queue->Push(&bucket);
         num++;
         sleep(2);
     }
@@ -41,7 +42,7 @@ void* func2(void *arg){
     int num = 0;
     SBucket *bucket = new SBucket();
     while (num != 19) {
-        queue->Pop(bucket);
+        queue->Pop(&bucket);
         printf("%d<--------\n", bucket->size);
         sleep(1);
     }
