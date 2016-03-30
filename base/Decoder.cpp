@@ -37,9 +37,8 @@ int Decoder::DecodeOneFrame(SBucket *bucket) {
 
 void* Decoder::Loop(void *arg){
 
-    printf("------------in decoder---------------\n");
     Decoder *decoder = (Decoder*)arg;
-    SBucket *bucket;
+    SBucket *bucket = new SBucket();
     decoder->m_sQueue->Pop(&bucket);
     SBucket *rData = new SBucket();
     while(bucket->size > 0){
@@ -52,6 +51,8 @@ void* Decoder::Loop(void *arg){
         rData->size = 0;
         decoder->m_sRenderQueue->Push(&rData);
     }
+    delete rData;
+    delete bucket;
     return NULL;
 }
 
