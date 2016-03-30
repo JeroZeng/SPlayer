@@ -39,8 +39,8 @@ public:
     SQueue(int len);
     ~SQueue();
 
-    void Push(SBucket* bucket);
-    SBucket* Pop();
+    void Push(SBucket *bucket);
+    void Pop(SBucket *bucket);
     void Flush(); 
 
 private:

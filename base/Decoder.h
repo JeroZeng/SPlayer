@@ -18,7 +18,7 @@ public:
     int WaitStreamEnd();
 
     virtual int Recieve(char *dt);
-    virtual int DecodeOneFrame(char *frame, int size);
+    virtual int DecodeOneFrame(SBucket *bucket);
 
 private:
     static void* Loop(void *arg);

@@ -24,14 +24,14 @@ void* func1(void *arg){
  
     SQueue *queue = (SQueue*) (arg);
     int num = 0;
+    SBucket *bucket = new SBucket();
     while (num < 20) {
-        SData *data = new SData();
-        data->size = num;
-        queue->Push(data);
-        printf("-------->%d\n", num);
+        bucket->size = num;
+        queue->Push(bucket);
         num++;
-        sleep(5);
+        sleep(2);
     }
+    delete bucket;
     return NULL;
 }
 
@@ -39,17 +39,12 @@ void* func2(void *arg){
 
     SQueue *queue = (SQueue*) (arg);
     int num = 0;
-    SData *data = NULL;
+    SBucket *bucket = new SBucket();
     while (num != 19) {
-        data = queue->Pop();
-        if (data != NULL) {
-            num = data->size;
-            printf("%d<--------\n", num);
-            delete data;
-        } else {
-            printf("+++++++++++++\n");
-        }
+        queue->Pop(bucket);
+        printf("%d<--------\n", bucket->size);
         sleep(1);
     }
+    delete bucket;
     return NULL;
 }

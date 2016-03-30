@@ -30,7 +30,7 @@ int Decoder::Recieve(char *dt){
     return size;
 }
 
-int Decoder::DecodeOneFrame(char *frame, int size) {
+int Decoder::DecodeOneFrame(SBucket *bucket) {
 
  return 0;
 }
@@ -39,20 +39,18 @@ void* Decoder::Loop(void *arg){
 
     printf("------------in decoder---------------\n");
     Decoder *decoder = (Decoder*)arg;
-    SBucket *bucket = decoder->m_sQueue->Pop();
-    while(bucket->size > 0){
+    SBucket bucket;
+    decoder->m_sQueue->Pop(&bucket);
+    while(bucket.size > 0){
         SBucket *rData = new SBucket();
-        rData->size = bucket->size << 1;
-        rData->data = bucket->data;
-        decoder->m_sRenderQueue->Push(rData);
-        delete bucket;
-        bucket = decoder->m_sQueue->Pop();
+        rData->size = bucket.size << 1;
+        rData->data = bucket.data;
+        decoder->m_sQueue->Pop(&bucket);
     }
-    if (bucket->size == 0) {
+    if (bucket.size == 0) {
         SBucket *rData = new SBucket();
         rData->size = 0;
         decoder->m_sRenderQueue->Push(rData);
-        delete bucket;
     }
     return NULL;
 }

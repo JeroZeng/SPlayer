@@ -27,20 +27,24 @@ void SQueue::Push(SBucket *bucket) {
     while(m_sWriter->next == m_sReader) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
+    SBucket *tBucket = m_sWriter->bucket;
     m_sWriter->bucket = bucket;
+    bucket = tBucket;
     m_sWriter = m_sWriter->next;
     pthread_cond_signal(&m_sCond);
 }
 
-SBucket* SQueue::Pop() {
+void SQueue::Pop(SBucket *bucket) {
     CLock lock(m_sLock);
     while(m_sReader == m_sWriter) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
-    SBucket *bucket = m_sReader->bucket;
+    SBucket *tBucket = m_sReader->bucket;
+    printf("-----------%d\n", tBucket->size);
+    m_sReader->bucket = bucket;
+    bucket = tBucket;
     m_sReader = m_sReader->next;
     pthread_cond_signal(&m_sCond);
-    return bucket;
 }
 
 void SQueue::Flush() {

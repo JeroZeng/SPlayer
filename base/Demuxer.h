@@ -10,7 +10,7 @@ public:
 public:
     ~Demuxer();
     virtual int Open(const char *url);
-    virtual int GetOneFrame(char *data);
+    virtual int GetOneFrame(SBucket *bucket);
     int Start();
     int WaitStreamEnd();
     void SetFrameSize(int size);

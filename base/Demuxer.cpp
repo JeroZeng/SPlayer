@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "Demuxer.h"
 
+#define BUFFER_8M 8 * 1024 * 1024
+#define MALLOC valloc
+
 Demuxer::~Demuxer(){
 }
 
@@ -17,25 +20,25 @@ int Demuxer::Start(){
     return 0;
 }
 
-int Demuxer::GetOneFrame(char *bucket){
+int Demuxer::GetOneFrame(SBucket *bucket){
     return 0;
 }
 
 void* Demuxer::Loop(void *arg){
 
     Demuxer *demuxer = (Demuxer*)arg;
-    char *dt;
-    int dt_size = demuxer->GetOneFrame(dt);
-    while(dt_size > 0){
-        SBucket *bucket = new SBucket();
-        bucket->data = dt;
-        bucket->size = dt_size;
-        demuxer->m_sQueue->Push(bucket);
-        dt_size = demuxer->GetOneFrame(dt);
+    char *data[8];
+    int i = 0;
+    data[i] = (char*)MALLOC(BUFFER_8M * sizeof(char));
+    SBucket bucket;
+    bucket.data = data[i];
+    int nextFrameSize = demuxer->GetOneFrame(&bucket);
+    while(nextFrameSize > 0){
+        demuxer->m_sQueue->Push(&bucket);
+        nextFrameSize = demuxer->GetOneFrame(&bucket);
     }
-    SBucket *bucket = new SBucket();
-    bucket->size = 0;
-    demuxer->m_sQueue->Push(bucket);
+    bucket.size = 0;
+    demuxer->m_sQueue->Push(&bucket);
     printf("------>END<------\n");
     return NULL;
 }
@@ -44,12 +47,4 @@ int Demuxer::WaitStreamEnd(){
 
     pthread_join(m_pThreadDemuxer, NULL);
     return 0;
-}
-
-void Demuxer::SetFrameSize(int size) {
-    m_iFrameSize = size;
-}
-
-int Demuxer::GetFrameSize() {
-    return m_iFrameSize;
 }
