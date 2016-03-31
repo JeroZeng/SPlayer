@@ -9,6 +9,8 @@ class Decoder{
 public:
     SQueue *m_sQueue;
     RenderQueue *m_sRenderQueue;
+    int m_iWidth;
+    int m_iHeight;
 
 public:
     Decoder();
@@ -18,13 +20,13 @@ public:
     int WaitStreamEnd();
 
     virtual int Recieve(char *dt);
-    virtual int DecodeOneFrame(SBucket *bucket);
+    virtual int DecodeOneFrame(SBucket *db, SBucket *rb);
 
 private:
     static void* Loop(void *arg);
 
 private:
-   pthread_t m_pThreadDecoder;
+    pthread_t m_pThreadDecoder;
 
 };
 

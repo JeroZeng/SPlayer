@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <strings.h>
 
 #define MAX_QUEUE_LENGTH 8
+#define MALLOC malloc
 #if 1
 typedef pthread_mutex_t SLock;
 typedef pthread_cond_t  SCond;

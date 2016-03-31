@@ -5,15 +5,13 @@
 
 class RawYUV: public Demuxer {
 public:
-    int m_iWidth;
-    int m_iHeight;
     int m_iFrameSize;
 
 public:
     RawYUV();
     ~RawYUV();
     int Open(const char *url);
-    int GetOneFrame(char *data);
+    int GetOneFrame(SBucket *bucket);
     int SetVideoProperty();
 
 

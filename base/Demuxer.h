@@ -7,6 +7,8 @@ class Demuxer
 {
 public:
     SQueue *m_sQueue;
+    int m_iWidth;
+    int m_iHeight;
 public:
     ~Demuxer();
     virtual int Open(const char *url);

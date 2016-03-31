@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "Demuxer.h"
 
-#define BUFFER_8M 8 * 1024 * 1024
-#define MALLOC valloc
+#define BUFFER8 8 * 1024 * 1024
 
 Demuxer::~Demuxer(){
 }
@@ -27,15 +26,30 @@ int Demuxer::GetOneFrame(SBucket *bucket){
 void* Demuxer::Loop(void *arg){
 
     Demuxer *demuxer = (Demuxer*)arg;
-    char *data[8];
+    char *memBar[5] = {NULL, NULL, NULL, NULL, NULL};
     int i = 0;
-    data[i] = (char*)MALLOC(BUFFER_8M * sizeof(char));
+    int iMemBarUsed = 0;
+    memBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
     SBucket *bucket = new SBucket;
-    bucket->data = data[i];
+    bucket->data = memBar[i];
     int nextFrameSize = demuxer->GetOneFrame(bucket);
+    iMemBarUsed += nextFrameSize;
     while(nextFrameSize > 0){
         demuxer->m_sQueue->Push(&bucket);
+        if (bucket->data == memBar[0]) {
+            i = 0;
+            nextFrameSize = nextFrameSize;
+        }
+        if (iMemBarUsed > BUFFER8) {
+            i++;
+            if (memBar[i] == NULL) {
+                memBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
+            }
+            bucket->data = memBar[i];
+            iMemBarUsed = nextFrameSize;
+        }
         nextFrameSize = demuxer->GetOneFrame(bucket);
+        iMemBarUsed += nextFrameSize;
     }
     bucket->size = 0;
     demuxer->m_sQueue->Push(&bucket);

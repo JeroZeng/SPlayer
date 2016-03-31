@@ -38,9 +38,11 @@ int RawYUV::SetVideoProperty() {
     return 0;
 }
 
-int RawYUV::GetOneFrame(char *data) {
+int RawYUV::GetOneFrame(SBucket *bucket) {
+    std::cout<<"------FrameSize:"<<m_iFrameSize<<std::endl;;
     if (m_pFile != (FILE*)NULL) {
-        m_iFrameSize = fread(data, 1, m_iFrameSize, m_pFile);
+        m_iFrameSize = fread(bucket->data, 1, m_iFrameSize, m_pFile);
     }
+    std::cout<<"------FrameSize:"<<m_iFrameSize<<std::endl;;
     return m_iFrameSize;
 }
