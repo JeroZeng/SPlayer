@@ -1,6 +1,6 @@
 #include "Decoder.h"
 
-#define RQ_SIZE 5
+#define RQ_SIZE 3 
 
 Decoder::Decoder(){
 
@@ -39,14 +39,15 @@ int Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
 }
 
 void* Decoder::Loop(void *arg){
-    char *memBar[RQ_SIZE+1];
+    char *memBar[RQ_SIZE+2];
     Decoder *decoder = (Decoder*)arg;
     SBucket *db = new SBucket();
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
     memBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
                     sizeof(char));
-    for (int i=1; (i<RQ_SIZE+1)&&(db->size>0); i++) {
+    rb->data = memBar[0];
+    for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
         decoder->DecodeOneFrame(db, rb);
         decoder->m_sRenderQueue->Push(&rb);
         memBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
@@ -65,7 +66,7 @@ void* Decoder::Loop(void *arg){
     }
     for (int i=0; i<RQ_SIZE+1; i++) {
         if (memBar[i] != NULL) {
-            //free(memBar[i]);
+            //TODO free(memBar[i]);
         }
         memBar[i] = NULL;
     }

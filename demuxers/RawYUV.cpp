@@ -15,7 +15,7 @@ RawYUV::~RawYUV() {
 int RawYUV::Open(const char *url) {
     m_pFile = fopen(url, "r");
     if (m_pFile != (FILE*)NULL) {
-        printf("------Open YUV--------\n");
+        printf("------>Open\tYUV<------\n");
         SetVideoProperty();
     }
     return 0;
@@ -39,10 +39,9 @@ int RawYUV::SetVideoProperty() {
 }
 
 int RawYUV::GetOneFrame(SBucket *bucket) {
-    std::cout<<"------FrameSize:"<<m_iFrameSize<<std::endl;;
+    bucket->size = m_iFrameSize;
     if (m_pFile != (FILE*)NULL) {
         m_iFrameSize = fread(bucket->data, 1, m_iFrameSize, m_pFile);
     }
-    std::cout<<"------FrameSize:"<<m_iFrameSize<<std::endl;;
     return m_iFrameSize;
 }

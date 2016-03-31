@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <strings.h>
 
+#define _DEBUG_
 #define MAX_QUEUE_LENGTH 8
 #define MALLOC malloc
 #if 1
