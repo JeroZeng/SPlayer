@@ -4,6 +4,8 @@
 #include "Queue.h"
 #include "Render.h"
 
+#define RQ_SIZE 6
+
 class Decoder{
 
 public:
@@ -18,6 +20,7 @@ public:
     void Init();
     int Start(SQueue *queue);
     int WaitStreamEnd();
+    void ClearMem();
 
     virtual int Recieve(char *dt);
     virtual int DecodeOneFrame(SBucket *db, SBucket *rb);
@@ -27,6 +30,7 @@ private:
 
 private:
     pthread_t m_pThreadDecoder;
+    char *m_MemBar[RQ_SIZE+2];
 
 };
 

@@ -6,6 +6,7 @@
 class RawYUV: public Demuxer {
 public:
     int m_iFrameSize;
+    bool m_bLoop;
 
 public:
     RawYUV();

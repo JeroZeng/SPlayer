@@ -35,6 +35,7 @@ int RawYUV::SetVideoProperty() {
     m_iWidth = w;
     m_iHeight = h;
     m_iFrameSize = w * h;
+    //m_bLoop = true;
     return 0;
 }
 
@@ -42,6 +43,10 @@ int RawYUV::GetOneFrame(SBucket *bucket) {
     bucket->size = m_iFrameSize;
     if (m_pFile != (FILE*)NULL) {
         m_iFrameSize = fread(bucket->data, 1, m_iFrameSize, m_pFile);
+        if(m_bLoop) {
+            fseek(m_pFile, 0, SEEK_SET);
+            m_iFrameSize = fread(bucket->data, 1, m_iFrameSize, m_pFile);
+        }
     }
     return m_iFrameSize;
 }

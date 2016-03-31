@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include "Demuxer.h"
 
-#define BUFFER8  8 * 1024 * 1024
+#define BUFFER8  2 * 1024 * 1024
+
+Demuxer::Demuxer() {
+    for (int i=0; i<5; i++) {
+        m_MemBar[i] = NULL;
+    }
+}
 
 Demuxer::~Demuxer(){
 }
@@ -26,31 +32,30 @@ int Demuxer::GetOneFrame(SBucket *bucket){
 void* Demuxer::Loop(void *arg){
 
     Demuxer *demuxer = (Demuxer*)arg;
-    char *memBar[5] = {NULL, NULL, NULL, NULL, NULL};
     int i = 0;
 #ifdef _DEBUG_
     int frame_num = 0;
 #endif//_Debug_
     int iMemBarUsed = 0;
-    memBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
+    demuxer->m_MemBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
     SBucket *bucket = new SBucket;
-    bucket->data = memBar[i];
+    bucket->data = demuxer->m_MemBar[i];
     int nextFrameSize = demuxer->GetOneFrame(bucket);
     iMemBarUsed += bucket->size;
     while(nextFrameSize > 0){
         //printf("------>i_size: %d\t<------\n", bucket->size);
         demuxer->m_sQueue->Push(&bucket);
-        if (bucket->data == memBar[0]) {
+        if (bucket->data == demuxer->m_MemBar[0]) {
             i = 0;
             iMemBarUsed = 0;
         }
-        bucket->data = memBar[i]+iMemBarUsed;
+        bucket->data = demuxer->m_MemBar[i]+iMemBarUsed;
         if (iMemBarUsed + nextFrameSize > BUFFER8) {
             i++;
-            if (memBar[i] == NULL) {
-                memBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
+            if (demuxer->m_MemBar[i] == NULL) {
+                demuxer->m_MemBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
             }
-            bucket->data = memBar[i];
+            bucket->data = demuxer->m_MemBar[i];
             iMemBarUsed = 0;
         }
         nextFrameSize = demuxer->GetOneFrame(bucket);
@@ -66,6 +71,15 @@ void* Demuxer::Loop(void *arg){
 #endif//_DEBUG_
     delete bucket;
     return NULL;
+}
+
+void Demuxer::ClearMem() {
+    for (int i=0; i<5; i++) {
+        if (m_MemBar[i] != NULL) {
+            free(m_MemBar[i]);
+            m_MemBar[i] = NULL;
+        }
+    }
 }
 
 int Demuxer::WaitStreamEnd(){

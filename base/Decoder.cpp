@@ -1,9 +1,6 @@
 #include "Decoder.h"
 
-#define RQ_SIZE 3 
-
 Decoder::Decoder(){
-
 }
 
 Decoder::~Decoder(){
@@ -39,20 +36,19 @@ int Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
 }
 
 void* Decoder::Loop(void *arg){
-    char *memBar[RQ_SIZE+2];
     Decoder *decoder = (Decoder*)arg;
     SBucket *db = new SBucket();
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
-    memBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
+    decoder->m_MemBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
                     sizeof(char));
-    rb->data = memBar[0];
+    rb->data = decoder->m_MemBar[0];
     for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
         decoder->DecodeOneFrame(db, rb);
         decoder->m_sRenderQueue->Push(&rb);
-        memBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
+        decoder->m_MemBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
                         sizeof(char));
-        rb->data = memBar[i];
+        rb->data = decoder->m_MemBar[i];
         decoder->m_sQueue->Pop(&db);
     }
     while(db->size > 0){
@@ -64,12 +60,6 @@ void* Decoder::Loop(void *arg){
         rb->size = 0;
         decoder->m_sRenderQueue->Push(&rb);
     }
-    for (int i=0; i<RQ_SIZE+1; i++) {
-        if (memBar[i] != NULL) {
-            //TODO free(memBar[i]);
-        }
-        memBar[i] = NULL;
-    }
     delete rb;
     delete db;
     return NULL;
@@ -79,4 +69,14 @@ int Decoder::WaitStreamEnd(){
 
     pthread_join(m_pThreadDecoder, NULL);
     return 0;
+}
+
+void Decoder::ClearMem() {
+    // free memory
+    for (int i=0; i<RQ_SIZE+2; i++) {
+        if (m_MemBar[i] != NULL) {
+            free(m_MemBar[i]);
+            m_MemBar[i] = NULL;
+        }
+    }
 }

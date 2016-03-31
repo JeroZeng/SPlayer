@@ -29,6 +29,8 @@ int SPlayer::Play(){
     demuxer->WaitStreamEnd();
     decoder->WaitStreamEnd();
     render->WaitStreamEnd();
+    demuxer->ClearMem();
+    decoder->ClearMem();
     return 0;
 }
 
