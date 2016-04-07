@@ -10,20 +10,23 @@ public:
 };
 
 class Render{
+public:
+    int m_iWidth;
+    int m_iHeight;
+    RenderQueue *m_sRenderQueue;
 
 public:
     Render();
-    ~Render();
+    virtual ~Render();
     void Init();
-    int Start(RenderQueue *queue);
-    int WaitStreamEnd();
+    virtual int Start(RenderQueue *queue);
+    virtual int WaitStreamEnd();
     virtual int Draw(char *yuv, int width, int height);
 
 private:
     static void* Loop(void *arg);
 
 private:
-    RenderQueue *m_sRenderQueue;
     pthread_t m_pThreadRender;
 
 };
