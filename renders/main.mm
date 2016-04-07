@@ -1,6 +1,18 @@
-#include "PCRender.h"
+//
+//  main.m
+//  GlutDemo
+//
+//  Created by ZengFeng on 3/31/16.
+//  Copyright © 2016 RealNetworks. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
 #include "GL/glew.h"
 #include <GLUT/GLUT.h>
+#include <stdio.h>
+
+#include <stdlib.h>
+#include <string.h>
 
 //set '1' to choose a type of file to play
 #define LOAD_RGB24   0
@@ -8,6 +20,9 @@
 #define LOAD_BGRA    0
 #define LOAD_YUV420P 1
 
+int screen_w=500,screen_h=500;
+const int pixel_w = 320, pixel_h = 180;
+//Bit per Pixel
 #if LOAD_BGRA
 const int bpp=32;
 #elif LOAD_RGB24|LOAD_BGR24
@@ -15,14 +30,15 @@ const int bpp=24;
 #elif LOAD_YUV420P
 const int bpp=12;
 #endif
-
-PCRender *g_sRender = NULL;
+//YUV file
+FILE *fp = NULL;
+unsigned char buffer[pixel_w*pixel_h*bpp/8];
+unsigned char buffer_convert[pixel_w*pixel_h*3];
 
 inline unsigned char CONVERT_ADJUST(double tmp)
 {
     return (unsigned char)((tmp >= 0 && tmp <= 255)?tmp:(tmp < 0 ? 0 : 255));
 }
-
 //YUV420P to RGB24
 void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nWidth,int nHeight)
 {
@@ -68,8 +84,8 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
              G = CONVERT_ADJUST(( 298 * C - 100 * D - 208 * E + 128) >> 8);
              B = CONVERT_ADJUST(( 298 * C + 516 * D + 128) >> 8);
              R = ((R - 128) * .6 + 128 )>255?255:(R - 128) * .6 + 128;
-             G = ((G - 128) * .6 + 128 )>255?255:(G - 128) * .6 + 128; 
-             B = ((B - 128) * .6 + 128 )>255?255:(B - 128) * .6 + 128; 
+             G = ((G - 128) * .6 + 128 )>255?255:(G - 128) * .6 + 128;
+             B = ((B - 128) * .6 + 128 )>255?255:(B - 128) * .6 + 128;
              */
             offSet = rgb_width * i + j * 3;
             
@@ -82,26 +98,29 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
 }
 
 void display(void){
-    
-    g_sRender->m_sRenderQueue->Pop(&g_sRender->m_sBucket);
+    if (fread(buffer, 1, pixel_w*pixel_h*bpp/8, fp) != pixel_w*pixel_h*bpp/8){
+        // Loop
+        fseek(fp, 0, SEEK_SET);
+        fread(buffer, 1, pixel_w*pixel_h*bpp/8, fp);
+    }
     
     //Make picture full of window
     //Move to(-1.0,1.0)
     glRasterPos3f(-1.0f,1.0f,0);
     //Zoom, Flip
-    glPixelZoom((float)g_sRender->m_iWidth/(float)g_sRender->m_iWidth, -(float)g_sRender->m_iHeight/(float)g_sRender->m_iHeight);
+    glPixelZoom((float)screen_w/(float)pixel_w, -(float)screen_h/(float)pixel_h);
     
     
     
 #if LOAD_BGRA
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_BGRA, GL_UNSIGNED_BYTE, bucket->data);
+    glDrawPixels(pixel_w, pixel_h,GL_BGRA, GL_UNSIGNED_BYTE, buffer);
 #elif LOAD_RGB24
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, bucket->data);
+    glDrawPixels(pixel_w, pixel_h,GL_RGB, GL_UNSIGNED_BYTE, buffer);
 #elif LOAD_BGR24
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_BGR_EXT, GL_UNSIGNED_BYTE, bucket->data);
+    glDrawPixels(pixel_w, pixel_h,GL_BGR_EXT, GL_UNSIGNED_BYTE, buffer);
 #elif LOAD_YUV420P
-    CONVERT_YUV420PtoRGB24((unsigned char*)g_sRender->m_sBucket->data,g_sRender->m_chConvertBuffer,g_sRender->m_iWidth,g_sRender->m_iHeight);
-    glDrawPixels(g_sRender->m_iWidth, g_sRender->m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, g_sRender->m_chConvertBuffer);
+    CONVERT_YUV420PtoRGB24(buffer,buffer_convert,pixel_w,pixel_h);
+    glDrawPixels(pixel_w, pixel_h,GL_RGB, GL_UNSIGNED_BYTE, buffer_convert);
 #endif
     //GLUT_DOUBLE
     glutSwapBuffers();
@@ -116,37 +135,47 @@ void timeFunc(int value){
     glutTimerFunc(40, timeFunc, 0);
 }
 
-PCRender::~PCRender() {
-    if (m_chConvertBuffer != NULL) {
-        free(m_chConvertBuffer);
-        m_chConvertBuffer = NULL;
-    }
-    if (m_sBucket != NULL) {
-        delete m_sBucket;
-        m_sBucket = NULL;
-    }
-}
 
-int PCRender::Start(RenderQueue *queue) {
-    m_sRenderQueue = queue;
-    m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
-    m_sBucket = new SBucket();
-    g_sRender = this;
-    int argc = 1;
-    char *argv[1] = {"../playDemo"};
+
+int main(int argc, char* argv[])
+{
+#if LOAD_BGRA
+    fp=fopen("../test_bgra_320x180.rgb","rb+");
+#elif LOAD_RGB24
+    fp=fopen("../test_rgb24_320x180.rgb","rb+");
+#elif LOAD_BGR24
+    fp=fopen("../test_bgr24_320x180.rgb","rb+");
+#elif LOAD_YUV420P
+    fp=fopen("test_yuv420p_320x180.yuv","rb+");
+#endif
+    if(fp==NULL){
+        printf("Cannot open this file.\n");
+        return -1;
+    }
     
+    // GLUT init
+    printf("%d\t%s\n", argc, argv[0]);
     glutInit(&argc, argv);
+    printf("%d\t%s\n", argc, argv[0]);
+    //Double, Use glutSwapBuffers() to show
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB );
+    //Single, Use glFlush() to show
+    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
+    
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(m_iWidth, m_iHeight);
-    glutCreateWindow("SPlay");
-
+    glutInitWindowSize(screen_w, screen_h);
+    glutCreateWindow("Simplest Video Play OpenGL");
+    printf("Simplest Video Play OpenGL\n");
+    printf("Lei Xiaohua\n");
+    printf("http://blog.csdn.net/leixiaohua1020\n");
+    printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+    printf("%d\t%s\n", argc, argv[0]);
+    
     glutDisplayFunc(&display);
-    glutTimerFunc(40, timeFunc, 0);
-
-    return 0;
-}
-
-int PCRender::WaitStreamEnd() {
+    glutTimerFunc(40, timeFunc, 0); 
+    
+    // Start!
+    glutMainLoop();
+    
     return 0;
 }
