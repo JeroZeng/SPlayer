@@ -1,7 +1,9 @@
 SRC = playDemo.cpp ../*.cpp ../base/*.cpp ../demuxers/*.cpp ../renders/*.cpp
 
 CXXFLAGS= -framework GLUT \
-          -framework OpenGL
+          -framework OpenGL \
+          -L../renders/lib \
+          -lGLEW
 
 CXX=clang++
 
