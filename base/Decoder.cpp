@@ -30,7 +30,7 @@ int Decoder::Recieve(char *dt){
 }
 
 int Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
-    rb->size = m_iWidth * m_iHeight;
+    rb->size = m_iWidth * m_iHeight * 3 / 2;
     memcpy(rb->data, db->data, db->size);
     return 0;
 }
@@ -41,13 +41,13 @@ void* Decoder::Loop(void *arg){
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
     decoder->m_MemBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
-                    sizeof(char));
+                    sizeof(char) * 3 / 2);
     rb->data = decoder->m_MemBar[0];
     for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
         decoder->DecodeOneFrame(db, rb);
         decoder->m_sRenderQueue->Push(&rb);
         decoder->m_MemBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
-                        sizeof(char));
+                        sizeof(char) * 3 / 2);
         rb->data = decoder->m_MemBar[i];
         decoder->m_sQueue->Pop(&db);
     }

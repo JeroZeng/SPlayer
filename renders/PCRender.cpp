@@ -144,6 +144,8 @@ int PCRender::Start(RenderQueue *queue) {
     glutDisplayFunc(&display);
     glutTimerFunc(40, timeFunc, 0);
 
+    glutMainLoop();
+
     return 0;
 }
 

@@ -6,8 +6,7 @@ SRC = playDemo.cpp								\
 
 CXXFLAGS= -framework GLUT						\
           -framework OpenGL						\
-          -L../renders/lib						\
-          -lGLEW
+          -L../renders/lib
 
 CXX=clang++
 
