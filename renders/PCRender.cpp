@@ -1,6 +1,4 @@
 #include "PCRender.h"
-#include "GL/glew.h"
-#include <GLUT/GLUT.h>
 
 //set '1' to choose a type of file to play
 #define LOAD_RGB24   0
@@ -15,8 +13,6 @@ const int bpp=24;
 #elif LOAD_YUV420P
 const int bpp=12;
 #endif
-
-PCRender *g_sRender = NULL;
 
 inline unsigned char CONVERT_ADJUST(double tmp)
 {
@@ -81,41 +77,6 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
     free(tmpbuf);
 }
 
-void display(void){
-    
-    g_sRender->m_sRenderQueue->Pop(&g_sRender->m_sBucket);
-    
-    //Make picture full of window
-    //Move to(-1.0,1.0)
-    glRasterPos3f(-1.0f,1.0f,0);
-    //Zoom, Flip
-    glPixelZoom((float)g_sRender->m_iWidth/(float)g_sRender->m_iWidth, -(float)g_sRender->m_iHeight/(float)g_sRender->m_iHeight);
-    
-    
-    
-#if LOAD_BGRA
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_BGRA, GL_UNSIGNED_BYTE, bucket->data);
-#elif LOAD_RGB24
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, bucket->data);
-#elif LOAD_BGR24
-    glDrawPixels(g_sRender->m_iWight, g_sRender->m_iHeight,GL_BGR_EXT, GL_UNSIGNED_BYTE, bucket->data);
-#elif LOAD_YUV420P
-    CONVERT_YUV420PtoRGB24((unsigned char*)g_sRender->m_sBucket->data,g_sRender->m_chConvertBuffer,g_sRender->m_iWidth,g_sRender->m_iHeight);
-    glDrawPixels(g_sRender->m_iWidth, g_sRender->m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, g_sRender->m_chConvertBuffer);
-#endif
-    //GLUT_DOUBLE
-    glutSwapBuffers();
-    
-    //GLUT_SINGLE
-    //glFlush();
-}
-
-void timeFunc(int value){
-    display();
-    // Present frame every 40 ms
-    glutTimerFunc(40, timeFunc, 0);
-}
-
 PCRender::~PCRender() {
     if (m_chConvertBuffer != NULL) {
         free(m_chConvertBuffer);
@@ -127,28 +88,51 @@ PCRender::~PCRender() {
     }
 }
 
-int PCRender::Start(RenderQueue *queue) {
-    m_sRenderQueue = queue;
+int PCRender::Init() {
+    if (!glfwInit())
+        return -1;
+    m_glfwWindow = glfwCreateWindow(m_iWidth, m_iHeight, "SPlayer", NULL, NULL);
+    //glfwSetWindowPos(m_glfwWindow, 300, 200);
+    glfwShowWindow(m_glfwWindow);
+    if (!m_glfwWindow) {
+        printf("Create Window Failed\n");
+        glfwTerminate();
+        return -1;
+    }
+    //glfwMakeContextCurrent(m_glfwWindow);
+
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
-    m_sBucket = new SBucket();
-    g_sRender = this;
-    int argc = 1;
-    char *argv[1] = {"../playDemo"};
-    
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB );
-    glutInitWindowPosition(100, 100);
-    glutInitWindowSize(m_iWidth, m_iHeight);
-    glutCreateWindow("SPlay");
-
-    glutDisplayFunc(&display);
-    glutTimerFunc(40, timeFunc, 0);
-
-    glutMainLoop();
 
     return 0;
 }
 
+int PCRender::Draw(SBucket *bucket) {
+    glfwMakeContextCurrent(m_glfwWindow);
+    glRasterPos3f(-1.0f,1.0f,0);
+    glPixelZoom((float)m_iWidth/(float)m_iWidth, -(float)m_iHeight/(float)m_iHeight);
+    CONVERT_YUV420PtoRGB24((unsigned char*)bucket->data,m_chConvertBuffer,m_iWidth,m_iHeight);
+    glDrawPixels(m_iWidth, m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, m_chConvertBuffer);
+    glfwSwapBuffers(m_glfwWindow);
+    glfwMakeContextCurrent(NULL);
+    return 0;
+}
+
 int PCRender::WaitStreamEnd() {
+    while (!glfwWindowShouldClose(m_glfwWindow)) {
+        glfwWaitEvents();    
+    }
+    glfwHideWindow(m_glfwWindow);
+    //Render::Stop();
+    Render::WaitStreamEnd();
+    printf("-------------->Render Stoped------------\n");
+    return 0;
+}
+
+bool PCRender::ShouldExit() {
+    return glfwWindowShouldClose(m_glfwWindow);
+}
+
+int PCRender::Exit() {
+    glfwTerminate();
     return 0;
 }

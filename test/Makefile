@@ -4,9 +4,14 @@ SRC = playDemo.cpp								\
      ../demuxers/*.cpp							\
      ../renders/*.cpp
 
-CXXFLAGS= -framework GLUT						\
+CXXFLAGS= -framework Cocoa 						\
+          -framework IOKit						\
+          -framework CoreVideo					\
           -framework OpenGL						\
-          -L../renders/lib
+          -framework Carbon						\
+          -I../ex_lib/							\
+          -L../ex_lib/GLFW/lib					\
+          -lglfw3
 
 CXX=clang++
 

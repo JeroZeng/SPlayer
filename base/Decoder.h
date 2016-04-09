@@ -19,6 +19,7 @@ public:
     ~Decoder();
     void Init();
     int Start(SQueue *queue);
+    int Stop();
     int WaitStreamEnd();
     void ClearMem();
 

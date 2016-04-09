@@ -18,10 +18,13 @@ public:
 public:
     Render();
     virtual ~Render();
-    void Init();
-    virtual int Start(RenderQueue *queue);
+    virtual int Init();
+    int Start(RenderQueue *queue);
+    virtual int Draw(SBucket *bucket);
+    int Stop();
+    virtual bool ShouldExit();
+    virtual int Exit();
     virtual int WaitStreamEnd();
-    virtual int Draw(char *yuv, int width, int height);
 
 private:
     static void* Loop(void *arg);

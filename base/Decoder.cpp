@@ -65,8 +65,11 @@ void* Decoder::Loop(void *arg){
     return NULL;
 }
 
-int Decoder::WaitStreamEnd(){
+int Decoder::Stop() {
+    return pthread_kill(m_pThreadDecoder, SIGQUIT);
+}
 
+int Decoder::WaitStreamEnd(){
     pthread_join(m_pThreadDecoder, NULL);
     return 0;
 }

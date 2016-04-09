@@ -82,8 +82,11 @@ void Demuxer::ClearMem() {
     }
 }
 
-int Demuxer::WaitStreamEnd(){
+int Demuxer::Stop() {
+    return pthread_kill(m_pThreadDemuxer, SIGQUIT);
+}
 
+int Demuxer::WaitStreamEnd(){
     pthread_join(m_pThreadDemuxer, NULL);
     return 0;
 }
