@@ -18,14 +18,14 @@ SPlayer::~SPlayer(){
     delete render;
 }
 
-void SPlayer::Init(){
+void SPlayer::Init() {
     demuxer->Open("../flower_352_288.yuv");
     render->m_iWidth = decoder->m_iWidth = demuxer->m_iWidth;
     render->m_iHeight = decoder->m_iHeight = demuxer->m_iHeight;
     render->Init();
 }
 
-int SPlayer::Play(){
+int SPlayer::Play() {
     demuxer->Start();
     decoder->Start(demuxer->m_sQueue);
     render->Start(decoder->m_sRenderQueue);
@@ -37,3 +37,8 @@ int SPlayer::Play(){
     return 0;
 }
 
+int SPlayer::Stop() {
+    demuxer->Stop();
+    decoder->Stop();
+    render->Stop();
+}

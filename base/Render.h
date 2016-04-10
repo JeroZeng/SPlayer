@@ -1,6 +1,7 @@
 #ifndef _RENDER_H_
 #define _RENDER_H_
 
+#include "Base.h"
 #include "Queue.h"
 
 class RenderQueue : public SQueue {
@@ -9,7 +10,7 @@ public:
 
 };
 
-class Render{
+class Render : private Base {
 public:
     int m_iWidth;
     int m_iHeight;
@@ -18,6 +19,9 @@ public:
 public:
     Render();
     virtual ~Render();
+
+    USING_BASE;
+
     virtual int Init();
     int Start(RenderQueue *queue);
     virtual int Draw(SBucket *bucket);
@@ -28,9 +32,6 @@ public:
 
 private:
     static void* Loop(void *arg);
-
-private:
-    pthread_t m_pThreadRender;
 
 };
 

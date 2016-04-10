@@ -23,12 +23,12 @@ int Render::Init() {
 int Render::Start(RenderQueue *queue) {
 
     m_sRenderQueue = queue;
-    pthread_create(&m_pThreadRender, NULL, Render::Loop, (void*)this);
+    pthread_create(&m_thread, NULL, Render::Loop, (void*)this);
     return 0;
 }
 
 int Render::WaitStreamEnd() {
-    pthread_join(m_pThreadRender, NULL);
+    pthread_join(m_thread, NULL);
     return 0;
 }
 
@@ -52,7 +52,7 @@ int Render::Draw(SBucket *bucket) {
 }
 
 int Render::Stop() {
-    return pthread_kill(m_pThreadRender, SIGQUIT);
+    return pthread_kill(m_thread, SIGQUIT);
 }
 
 bool Render::ShouldExit() {

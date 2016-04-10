@@ -20,7 +20,7 @@ int Demuxer::Open(const char *url){
 int Demuxer::Start(){
 
     m_sQueue = new SQueue(10);
-    pthread_create(&m_pThreadDemuxer, NULL, Demuxer::Loop, (void*)this);
+    pthread_create(&m_thread, NULL, Demuxer::Loop, (void*)this);
 
     return 0;
 }
@@ -83,10 +83,10 @@ void Demuxer::ClearMem() {
 }
 
 int Demuxer::Stop() {
-    return pthread_kill(m_pThreadDemuxer, SIGQUIT);
+    return pthread_kill(m_thread, SIGQUIT);
 }
 
 int Demuxer::WaitStreamEnd(){
-    pthread_join(m_pThreadDemuxer, NULL);
+    pthread_join(m_thread, NULL);
     return 0;
 }

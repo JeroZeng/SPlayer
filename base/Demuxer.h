@@ -1,9 +1,10 @@
 #ifndef _DEMUXER_H_
 #define _DEMUXER_H_
 
+#include "Base.h"
 #include "Queue.h"
 
-class Demuxer
+class Demuxer : private Base
 {
 public:
     SQueue *m_sQueue;
@@ -12,6 +13,9 @@ public:
 public:
     Demuxer();
     ~Demuxer();
+
+    USING_BASE;
+
     virtual int Open(const char *url);
     virtual int GetOneFrame(SBucket *bucket);
     int Start();
@@ -24,7 +28,6 @@ private:
     static void* Loop(void *arg);
 private:
     int m_iFrameSize;
-    pthread_t m_pThreadDemuxer;
     char *m_MemBar[5];
 };
 

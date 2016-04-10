@@ -13,4 +13,5 @@ public:
     ~SPlayer();
     void Init();
     int Play();
+    int Stop();
 };

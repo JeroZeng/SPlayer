@@ -1,12 +1,13 @@
 #ifndef _DECODER_H_
 #define _DECODER_H_
 
+#include "Base.h"
 #include "Queue.h"
 #include "Render.h"
 
 #define RQ_SIZE 6
 
-class Decoder{
+class Decoder : private Base {
 
 public:
     SQueue *m_sQueue;
@@ -17,6 +18,9 @@ public:
 public:
     Decoder();
     ~Decoder();
+
+    USING_BASE;
+
     void Init();
     int Start(SQueue *queue);
     int Stop();
@@ -30,7 +34,6 @@ private:
     static void* Loop(void *arg);
 
 private:
-    pthread_t m_pThreadDecoder;
     char *m_MemBar[RQ_SIZE+2];
 
 };
