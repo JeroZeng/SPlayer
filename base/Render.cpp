@@ -37,10 +37,11 @@ void* Render::Loop(void *arg) {
     Render *render = (Render*)arg;
     SBucket *bucket = new SBucket();
     render->m_sRenderQueue->Pop(&bucket);
-    while(!render->ShouldExit()) {
+    while(!render->ShouldExit() && bucket->size) {
         render->m_sRenderQueue->Pop(&bucket);
         render->Draw(bucket);
     }
+    render->m_sRenderQueue->StopReader();
     if (bucket->size == 0) {
         delete bucket;
     }

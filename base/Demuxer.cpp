@@ -44,7 +44,9 @@ void* Demuxer::Loop(void *arg){
     iMemBarUsed += bucket->size;
     while(nextFrameSize > 0){
         //printf("------>i_size: %d\t<------\n", bucket->size);
-        demuxer->m_sQueue->Push(&bucket);
+        if (demuxer->m_sQueue->Push(&bucket)) {
+            break;
+        }
         if (bucket->data == demuxer->m_MemBar[0]) {
             i = 0;
             iMemBarUsed = 0;
@@ -64,8 +66,10 @@ void* Demuxer::Loop(void *arg){
         frame_num++;
 #endif//_DEBUG_
     }
-    bucket->size = 0;
-    demuxer->m_sQueue->Push(&bucket);
+    if (nextFrameSize == 0) {
+        bucket->size = 0;
+        demuxer->m_sQueue->Push(&bucket);
+    }
 #ifdef _DEBUG_
     printf("------>Frame\t%d<------\n", frame_num);
 #endif//_DEBUG_

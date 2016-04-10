@@ -30,8 +30,6 @@ int SPlayer::Play() {
     decoder->Start(demuxer->m_sQueue);
     render->Start(decoder->m_sRenderQueue);
     render->WaitStreamEnd();
-    decoder->WaitStreamEnd();
-    demuxer->WaitStreamEnd();
     decoder->ClearMem();
     demuxer->ClearMem();
     return 0;
@@ -41,4 +39,5 @@ int SPlayer::Stop() {
     demuxer->Stop();
     decoder->Stop();
     render->Stop();
+    return 0;
 }

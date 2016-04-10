@@ -53,9 +53,12 @@ void* Decoder::Loop(void *arg){
     }
     while(db->size > 0){
         decoder->DecodeOneFrame(db, rb);
-        decoder->m_sRenderQueue->Push(&rb);
+        if(decoder->m_sRenderQueue->Push(&rb)) {
+            break;
+        }
         decoder->m_sQueue->Pop(&db);
     }
+    decoder->m_sQueue->StopReader();
     if (db->size == 0) {
         rb->size = 0;
         decoder->m_sRenderQueue->Push(&rb);

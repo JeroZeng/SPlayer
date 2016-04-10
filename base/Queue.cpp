@@ -30,8 +30,11 @@ SQueue::~SQueue() {
     pthread_cond_destroy(&m_sCond);
 }
 
-void SQueue::Push(SBucket **bucket) {
+int SQueue::Push(SBucket **bucket) {
     CLock lock(m_sLock);
+    if (m_sReader == NULL) {
+        return -1;
+    }
     while(m_sWriter->next == m_sReader) {
         pthread_cond_wait(&m_sCond, &m_sLock);
     }
@@ -40,6 +43,7 @@ void SQueue::Push(SBucket **bucket) {
     *bucket = tBucket;
     m_sWriter = m_sWriter->next;
     pthread_cond_signal(&m_sCond);
+    return 0;
 }
 
 void SQueue::Pop(SBucket **bucket) {
@@ -52,6 +56,13 @@ void SQueue::Pop(SBucket **bucket) {
     *bucket = tBucket;
     m_sReader = m_sReader->next;
     pthread_cond_signal(&m_sCond);
+}
+
+void SQueue::StopReader() {
+    CLock lock(m_sLock);
+    m_sReader = NULL;
+    pthread_cond_signal(&m_sCond);
+
 }
 
 void SQueue::Flush() {

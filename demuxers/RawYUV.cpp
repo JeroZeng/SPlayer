@@ -35,7 +35,7 @@ int RawYUV::SetVideoProperty() {
     m_iWidth = w;
     m_iHeight = h;
     m_iFrameSize = w * h * 3 / 2;
-    m_bLoop = true;
+    //m_bLoop = true;
     return 0;
 }
 
