@@ -1,9 +1,15 @@
+MacOS = Darwin
+Linux = Linux
+
+ARCH = $(shell uname -s)
+
 SRC = playDemo.cpp								\
      ../*.cpp									\
      ../base/*.cpp								\
      ../demuxers/*.cpp							\
      ../renders/*.cpp
 
+ifeq ($(ARCH), $(MacOS))
 CXXFLAGS= -framework Cocoa 						\
           -framework IOKit						\
           -framework CoreVideo					\
@@ -12,8 +18,10 @@ CXXFLAGS= -framework Cocoa 						\
           -I../ex_lib/							\
           -L../ex_lib/GLFW/lib					\
           -lglfw3
-
-CXX=clang++
+CXX = clang++
+else ifeq($(ARCH), $(Linux))
+CXX = g++
+endif
 
 all : playDemo testQueue
 
