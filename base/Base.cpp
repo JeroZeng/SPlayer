@@ -6,6 +6,7 @@ int Base::Start() {
 }
 
 int Base::Pause() {
+    m_eStatus = StatusPause;
     return 0;
 }
 
