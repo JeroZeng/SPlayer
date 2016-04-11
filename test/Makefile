@@ -19,7 +19,7 @@ CXXFLAGS= -framework Cocoa 						\
           -L../ex_lib/GLFW/lib					\
           -lglfw3
 CXX = clang++
-else ifeq($(ARCH), $(Linux))
+else ifeq ($(ARCH), $(Linux))
 CXX = g++
 endif
 
