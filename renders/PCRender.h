@@ -7,6 +7,7 @@ class PCRender : public Render {
 public:
     ~PCRender();
     int Init();
+    static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     int Draw(SBucket *bucket);
     int ClearScreen();
     int WaitStreamEnd();
@@ -19,7 +20,6 @@ public:
 
 private:
     GLFWwindow *m_glfwWindow; 
-    bool m_bExit;
 };
 
 #endif//_PC_RENDER_

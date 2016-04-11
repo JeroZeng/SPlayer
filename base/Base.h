@@ -3,9 +3,7 @@
 #include <pthread.h>
 #define USING_BASE using Base::Start; \
                    using Base::Pause; \
-                   using Base::Stop; \
-                   using Base::SetStatus; \
-                   using Base::GetStatus
+                   using Base::Stop;
 
 typedef enum {
     StatusPlay  = 0,

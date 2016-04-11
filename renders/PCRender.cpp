@@ -88,10 +88,24 @@ PCRender::~PCRender() {
     }
 }
 
+void PCRender::KeyCallback(GLFWwindow *window, int key, int scancode,
+                           int action, int mods) {
+    PCRender *render = (PCRender*)glfwGetWindowUserPointer(window);
+    if (action != GLFW_PRESS)
+        return;
+    switch (key) {
+        case GLFW_KEY_ESCAPE: render->Stop();  break;
+        case GLFW_KEY_SPACE:  render->Pause(); break;
+    }
+
+}
+
 int PCRender::Init() {
     if (!glfwInit())
         return -1;
     m_glfwWindow = glfwCreateWindow(m_iWidth, m_iHeight, "SPlayer", NULL, NULL);
+    glfwSetWindowUserPointer(m_glfwWindow, this);
+    glfwSetKeyCallback(m_glfwWindow, KeyCallback);
     //glfwSetWindowPos(m_glfwWindow, 300, 200);
     glfwShowWindow(m_glfwWindow);
     if (!m_glfwWindow) {
@@ -100,7 +114,6 @@ int PCRender::Init() {
         return -1;
     }
     //glfwMakeContextCurrent(m_glfwWindow);
-    m_bExit = false;
 
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
 
@@ -131,16 +144,12 @@ int PCRender::WaitStreamEnd() {
     while (!glfwWindowShouldClose(m_glfwWindow)) {
         glfwWaitEvents();    
     }
-    SetStatus(StatusStop);
+    Stop();
     glfwHideWindow(m_glfwWindow);
     //Render::Stop();
     Render::WaitStreamEnd();
     printf("-------------->Render Stoped------------\n");
     return 0;
-}
-
-bool PCRender::ShouldExit() {
-    return m_bExit;
 }
 
 int PCRender::Exit() {

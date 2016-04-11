@@ -61,14 +61,6 @@ int Render::ClearScreen() {
     return 0;
 }
 
-int Render::Stop() {
-    return pthread_kill(m_thread, SIGQUIT);
-}
-
-bool Render::ShouldExit() {
-    return false;
-}
-
 int Render::Exit() {
     return 0;
 }
