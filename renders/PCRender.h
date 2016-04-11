@@ -8,6 +8,7 @@ public:
     ~PCRender();
     int Init();
     int Draw(SBucket *bucket);
+    int ClearScreen();
     int WaitStreamEnd();
     bool ShouldExit();
     int Exit();

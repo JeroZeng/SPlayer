@@ -42,6 +42,7 @@ void* Render::Loop(void *arg) {
         render->Draw(bucket);
     }
     render->m_sRenderQueue->StopReader();
+    render->ClearScreen();
     if (bucket->size == 0) {
         delete bucket;
     }
@@ -49,6 +50,10 @@ void* Render::Loop(void *arg) {
 }
 
 int Render::Draw(SBucket *bucket) {
+    return 0;
+}
+
+int Render::ClearScreen() {
     return 0;
 }
 

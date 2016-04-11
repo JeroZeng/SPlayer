@@ -117,6 +117,15 @@ int PCRender::Draw(SBucket *bucket) {
     return 0;
 }
 
+int PCRender::ClearScreen() {
+    glfwMakeContextCurrent(m_glfwWindow);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(m_glfwWindow);
+    glfwMakeContextCurrent(NULL);
+    return 0;
+}
+
 int PCRender::WaitStreamEnd() {
     while (!glfwWindowShouldClose(m_glfwWindow)) {
         glfwWaitEvents();    

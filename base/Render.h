@@ -25,6 +25,7 @@ public:
     virtual int Init();
     int Start(RenderQueue *queue);
     virtual int Draw(SBucket *bucket);
+    virtual int ClearScreen();
     int Stop();
     virtual bool ShouldExit();
     virtual int Exit();
