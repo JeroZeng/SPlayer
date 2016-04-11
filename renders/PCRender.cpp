@@ -94,7 +94,7 @@ void PCRender::KeyCallback(GLFWwindow *window, int key, int scancode,
     if (action != GLFW_PRESS)
         return;
     switch (key) {
-        case GLFW_KEY_ESCAPE: render->Stop();  break;
+        case GLFW_KEY_ESCAPE: render->Resume();  break;
         case GLFW_KEY_SPACE:  render->Pause(); break;
     }
 

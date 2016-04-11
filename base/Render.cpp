@@ -45,6 +45,7 @@ void* Render::Loop(void *arg) {
         if (st == StatusPause) {
             //TODO pthread_cond_wait();
             printf("----------->Pause Key Clicked<------------\n");
+            render->Wait();
             render->SetStatus(StatusPlay);
         }
         render->m_sRenderQueue->Pop(&bucket);
