@@ -19,6 +19,7 @@ public:
 
 private:
     GLFWwindow *m_glfwWindow; 
+    bool m_bExit;
 };
 
 #endif//_PC_RENDER_

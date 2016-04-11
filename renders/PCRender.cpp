@@ -100,6 +100,7 @@ int PCRender::Init() {
         return -1;
     }
     //glfwMakeContextCurrent(m_glfwWindow);
+    m_bExit = false;
 
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
 
@@ -130,6 +131,7 @@ int PCRender::WaitStreamEnd() {
     while (!glfwWindowShouldClose(m_glfwWindow)) {
         glfwWaitEvents();    
     }
+    SetStatus(StatusStop);
     glfwHideWindow(m_glfwWindow);
     //Render::Stop();
     Render::WaitStreamEnd();
@@ -138,7 +140,7 @@ int PCRender::WaitStreamEnd() {
 }
 
 bool PCRender::ShouldExit() {
-    return glfwWindowShouldClose(m_glfwWindow);
+    return m_bExit;
 }
 
 int PCRender::Exit() {

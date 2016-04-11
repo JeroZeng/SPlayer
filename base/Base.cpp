@@ -10,5 +10,14 @@ int Base::Pause() {
 }
 
 int Base::Stop() {
+    m_eStatus = StatusStop;
     return 0;
+}
+
+void Base::SetStatus(EStatus st) {
+    m_eStatus = st;
+}
+
+EStatus Base::GetStatus() {
+    return m_eStatus;
 }
