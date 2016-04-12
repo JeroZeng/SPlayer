@@ -1,6 +1,7 @@
 #ifndef _BASE_H_
 #define _BASE_H_
 #include <pthread.h>
+#include <semaphore.h>
 #define USING_BASE using Base::Resume; \
                    using Base::Pause; \
                    using Base::Stop;
@@ -24,7 +25,7 @@ public:
     EStatus GetStatus();
 public:
     pthread_t m_thread;
-    unsigned int  m_wait;
+    sem_t  *m_wait;
     EStatus m_eStatus;
 };
 #endif//_BASE_H_

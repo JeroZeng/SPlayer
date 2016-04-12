@@ -43,8 +43,6 @@ void* Render::Loop(void *arg) {
             break;
         } else
         if (st == StatusPause) {
-            //TODO pthread_cond_wait();
-            printf("----------->Pause Key Clicked<------------\n");
             if (render->Wait())
                 render->SetStatus(StatusPlay);
         }

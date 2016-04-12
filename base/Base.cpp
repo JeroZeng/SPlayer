@@ -3,10 +3,13 @@
 #include "Base.h"
 
 Base::Base() {
-    m_wait = 0;
+    sem_unlink("SPlayerPause");
+    m_wait = sem_open("SPlayerPause", O_CREAT, 0644, 0);
 }
 
 Base::~Base() {
+    sem_close(m_wait);
+    sem_unlink("SPlayerPause");
 }
 
 int Base::Start() {
@@ -36,17 +39,16 @@ EStatus Base::GetStatus() {
 }
 
 int Base::Wait() {
-    m_wait = 1;
     //while(__sync_bool_compare_and_swap(&m_wait, 1, 1));
     //m_wait = 0;
-    while (m_wait == 1);
+    sem_wait(m_wait);
     if (m_eStatus == StatusStop)
         return 0;
     return 1;
 }
 
 int Base::Resume() {
-    m_wait = 0;
+    sem_post(m_wait);
     m_eStatus = StatusPlay; 
     return 0;
 }
