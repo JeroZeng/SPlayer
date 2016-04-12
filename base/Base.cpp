@@ -48,7 +48,8 @@ int Base::Wait() {
 }
 
 int Base::Resume() {
-    sem_post(m_wait);
+    if (m_eStatus == StatusPause)
+        sem_post(m_wait);
     m_eStatus = StatusPlay; 
     return 0;
 }
