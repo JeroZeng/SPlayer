@@ -24,7 +24,7 @@ public:
     EStatus GetStatus();
 public:
     pthread_t m_thread;
-    sigset_t  m_wait;
+    unsigned int  m_wait;
     EStatus m_eStatus;
 };
 #endif//_BASE_H_
