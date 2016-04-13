@@ -2,9 +2,11 @@
 
 SNode::SNode() {
     bucket = new SBucket();
+    printf("-----------------init bucket: %d------------------\n", bucket);
 }
 
 SNode::~SNode() {
+    printf("-----------------destroy bucket: %d------------------\n", bucket);
     delete bucket;
 }
 
@@ -26,6 +28,14 @@ SQueue::SQueue(int len) {
 SQueue::~SQueue() {
     //CLock lock(&m_sLock);
     //TODO Release SBuckets if exist.
+    SNode *next = m_sWriter->next;
+    SNode *head = m_sWriter;
+    while (next != head) {
+        delete m_sWriter;
+        m_sWriter = next;
+        next = m_sWriter->next;
+    }
+    delete m_sWriter;
     pthread_mutex_destroy(&m_sLock);
     pthread_cond_destroy(&m_sCond);
 }

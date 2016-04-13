@@ -47,9 +47,7 @@ void* Render::Loop(void *arg) {
     }
     render->m_sRenderQueue->StopReader();
     render->ClearScreen();
-    if (bucket->size == 0) {
-        delete bucket;
-    }
+    delete bucket;
     return NULL;
 }
 

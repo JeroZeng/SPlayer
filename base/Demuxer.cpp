@@ -29,8 +29,7 @@ int Demuxer::GetOneFrame(SBucket *bucket){
     return 0;
 }
 
-void* Demuxer::Loop(void *arg){
-
+void* Demuxer::Loop(void *arg) {
     Demuxer *demuxer = (Demuxer*)arg;
     int i = 0;
 #ifdef _DEBUG_
@@ -78,6 +77,10 @@ void* Demuxer::Loop(void *arg){
 }
 
 void Demuxer::ClearMem() {
+    if (m_sQueue == NULL)
+        return;
+    delete m_sQueue;
+    m_sQueue = NULL;
     for (int i=0; i<5; i++) {
         if (m_MemBar[i] != NULL) {
             free(m_MemBar[i]);

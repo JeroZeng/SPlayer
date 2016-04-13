@@ -34,6 +34,7 @@ int SPlayer::Play() {
     render->WaitThreadClose();
     decoder->ClearMem();
     demuxer->ClearMem();
+    printf("--------------------->Terminal\n");
     return 0;
 }
 
