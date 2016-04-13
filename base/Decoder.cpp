@@ -4,6 +4,7 @@ Decoder::Decoder(){
 }
 
 Decoder::~Decoder(){
+    printf("-------------------->delete decoder\n");
 }
 
 void Decoder::Init(){

@@ -9,11 +9,6 @@ Render::Render() {
 }
 
 Render::~Render() {
-
-    if (m_sRenderQueue != NULL) {
-        delete m_sRenderQueue;
-    }
-
 }
 
 int Render::Init() {

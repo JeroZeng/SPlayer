@@ -10,6 +10,7 @@ Demuxer::Demuxer() {
 }
 
 Demuxer::~Demuxer(){
+    printf("-------------------------->delete demuxer\n");
 }
 
 int Demuxer::Open(const char *url){

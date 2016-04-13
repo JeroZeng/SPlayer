@@ -10,6 +10,7 @@ Base::Base() {
 Base::~Base() {
     sem_close(m_wait);
     sem_unlink("SPlayerPause");
+    printf("------------------->remove signal\n");
 }
 
 int Base::Start() {
