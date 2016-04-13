@@ -27,14 +27,10 @@ int Render::Start(RenderQueue *queue) {
     return 0;
 }
 
-int Render::WaitStreamEnd() {
-    pthread_join(m_thread, NULL);
-    return 0;
-}
-
 void* Render::Loop(void *arg) {
 
     Render *render = (Render*)arg;
+    render->SetStatus(StatusPlay);
     SBucket *bucket = new SBucket();
     render->m_sRenderQueue->Pop(&bucket);
     while(bucket->size) {

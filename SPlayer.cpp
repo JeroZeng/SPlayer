@@ -4,12 +4,13 @@
 #include "renders/PCRender.h"
 
 SPlayer::SPlayer(const char *url){
+    m_chUrl = url;
     //demuxer = new Demuxer();
     //demuxer = new Mp4Demuxer();
     demuxer = new RawYUV();
     decoder = new Decoder();
     //render  = new Render();
-    render  = new PCRender();
+    render  = new PCRender(this);
 }
 
 SPlayer::~SPlayer(){
@@ -26,18 +27,32 @@ void SPlayer::Init() {
 }
 
 int SPlayer::Play() {
+    printf("---------->Start Play<-------------\n");
     demuxer->Start();
     decoder->Start(demuxer->m_sQueue);
     render->Start(decoder->m_sRenderQueue);
-    render->WaitStreamEnd();
+    render->WaitThreadClose();
     decoder->ClearMem();
     demuxer->ClearMem();
     return 0;
 }
 
+int SPlayer::Pause() {
+    return render->Pause();
+}
+
+int SPlayer::Resume() {
+    return render->Resume();
+}
+
 int SPlayer::Stop() {
-    demuxer->Stop();
-    decoder->Stop();
+    //demuxer->Stop();
+    //decoder->Stop();
     render->Stop();
+    //render->WaitStreamEnd();
+    decoder->WaitThreadClose();
+    demuxer->WaitThreadClose();
+    decoder->ClearMem();
+    demuxer->ClearMem();
     return 0;
 }

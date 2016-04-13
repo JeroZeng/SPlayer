@@ -27,7 +27,6 @@ public:
     virtual int Draw(SBucket *bucket);
     virtual int ClearScreen();
     virtual int Exit();
-    virtual int WaitStreamEnd();
 
 private:
     static void* Loop(void *arg);

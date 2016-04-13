@@ -4,7 +4,8 @@
 #include <semaphore.h>
 #define USING_BASE using Base::Resume; \
                    using Base::Pause; \
-                   using Base::Stop;
+                   using Base::Stop; \
+                   using Base::WaitThreadClose;
 
 typedef enum {
     StatusPlay  = 0,
@@ -23,6 +24,7 @@ public:
     virtual int Resume();
     void SetStatus(EStatus vs);
     EStatus GetStatus();
+    virtual int WaitThreadClose();
 public:
     pthread_t m_thread;
     sem_t  *m_wait;

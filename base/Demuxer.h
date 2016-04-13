@@ -20,7 +20,6 @@ public:
     virtual int GetOneFrame(SBucket *bucket);
     int Start();
     int Stop();
-    int WaitStreamEnd();
     void SetFrameSize(int size);
     int GetFrameSize();
     void ClearMem();

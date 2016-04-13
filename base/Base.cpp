@@ -53,3 +53,8 @@ int Base::Resume() {
     m_eStatus = StatusPlay; 
     return 0;
 }
+
+int Base::WaitThreadClose() {
+    pthread_join(m_thread, NULL);
+    return 0;
+}

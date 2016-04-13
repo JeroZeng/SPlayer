@@ -24,7 +24,6 @@ public:
     void Init();
     int Start(SQueue *queue);
     int Stop();
-    int WaitStreamEnd();
     void ClearMem();
 
     virtual int Recieve(char *dt);

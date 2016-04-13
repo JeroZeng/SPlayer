@@ -72,11 +72,6 @@ int Decoder::Stop() {
     return pthread_kill(m_thread, SIGQUIT);
 }
 
-int Decoder::WaitStreamEnd(){
-    pthread_join(m_thread, NULL);
-    return 0;
-}
-
 void Decoder::ClearMem() {
     // free memory
     for (int i=0; i<RQ_SIZE+2; i++) {

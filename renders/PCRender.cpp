@@ -1,5 +1,8 @@
 #include "PCRender.h"
 
+extern void keycallback(GLFWwindow *window, int key, int scancode,
+                           int action, int mods);
+
 //set '1' to choose a type of file to play
 #define LOAD_RGB24   0
 #define LOAD_BGR24   0
@@ -77,6 +80,11 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
     free(tmpbuf);
 }
 
+PCRender::PCRender(SPlayer *player) {
+    if (player != NULL)
+        m_sPlayer = player;
+}
+
 PCRender::~PCRender() {
     if (m_chConvertBuffer != NULL) {
         free(m_chConvertBuffer);
@@ -88,24 +96,12 @@ PCRender::~PCRender() {
     }
 }
 
-void PCRender::KeyCallback(GLFWwindow *window, int key, int scancode,
-                           int action, int mods) {
-    PCRender *render = (PCRender*)glfwGetWindowUserPointer(window);
-    if (action != GLFW_PRESS)
-        return;
-    switch (key) {
-        case GLFW_KEY_ESCAPE: render->Stop();  break;
-        case GLFW_KEY_SPACE:  render->Pause(); break;
-    }
-
-}
-
 int PCRender::Init() {
     if (!glfwInit())
         return -1;
     m_glfwWindow = glfwCreateWindow(m_iWidth, m_iHeight, "SPlayer", NULL, NULL);
-    glfwSetWindowUserPointer(m_glfwWindow, this);
-    glfwSetKeyCallback(m_glfwWindow, KeyCallback);
+    glfwSetWindowUserPointer(m_glfwWindow, m_sPlayer);
+    glfwSetKeyCallback(m_glfwWindow, keycallback);
     //glfwSetWindowPos(m_glfwWindow, 300, 200);
     glfwShowWindow(m_glfwWindow);
     if (!m_glfwWindow) {
@@ -140,14 +136,14 @@ int PCRender::ClearScreen() {
     return 0;
 }
 
-int PCRender::WaitStreamEnd() {
+int PCRender::WaitThreadClose() {
     while (!glfwWindowShouldClose(m_glfwWindow)) {
         glfwWaitEvents();    
     }
     Stop();
     glfwHideWindow(m_glfwWindow);
     //Render::Stop();
-    Render::WaitStreamEnd();
+    Render::WaitThreadClose();
     printf("-------------->Render Stoped------------\n");
     return 0;
 }
