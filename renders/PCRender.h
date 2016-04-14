@@ -8,8 +8,7 @@ class PCRender : public Render {
 public:
     PCRender(SPlayer* player);
     ~PCRender();
-    int Init();
-    static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    int Init(SWindow *win);
     int Draw(SBucket *bucket);
     int ClearScreen();
     int WaitThreadClose();
@@ -21,7 +20,7 @@ public:
     unsigned char *m_chConvertBuffer;
 
 private:
-    GLFWwindow *m_glfwWindow; 
+    SWindow *m_sWindow; 
 };
 
 #endif//_PC_RENDER_

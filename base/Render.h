@@ -3,6 +3,7 @@
 
 #include "Base.h"
 #include "Queue.h"
+#include "../Config.h"
 
 class RenderQueue : public SQueue {
 public:
@@ -22,7 +23,7 @@ public:
 
     USING_BASE;
 
-    virtual int Init();
+    virtual int Init(SWindow *win);
     int Start(RenderQueue *queue);
     virtual int Draw(SBucket *bucket);
     virtual int ClearScreen();

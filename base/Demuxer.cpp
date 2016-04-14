@@ -10,7 +10,6 @@ Demuxer::Demuxer() {
 }
 
 Demuxer::~Demuxer(){
-    printf("-------------------------->delete demuxer\n");
 }
 
 int Demuxer::Open(const char *url){
@@ -71,7 +70,7 @@ void* Demuxer::Loop(void *arg) {
         demuxer->m_sQueue->Push(&bucket);
     }
 #ifdef _DEBUG_
-    printf("------>Frame\t%d<------\n", frame_num);
+    printf("---------->Frame: %d\n\n", frame_num);
 #endif//_DEBUG_
     delete bucket;
     return NULL;

@@ -3,6 +3,7 @@
 #include "base/Demuxer.h"
 #include "base/Decoder.h"
 #include "base/Render.h"
+#include "Config.h"
 
 class SPlayer{
 public:
@@ -13,7 +14,7 @@ public:
 public:
     SPlayer(const char* name);
     ~SPlayer();
-    void Init();
+    void Init(SWindow *win);
     int Play();
     int Pause();
     int Resume();

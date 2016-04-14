@@ -1,8 +1,5 @@
 #include "PCRender.h"
 
-extern void keycallback(GLFWwindow *window, int key, int scancode,
-                           int action, int mods);
-
 //set '1' to choose a type of file to play
 #define LOAD_RGB24   0
 #define LOAD_BGR24   0
@@ -92,52 +89,34 @@ PCRender::~PCRender() {
     }
 }
 
-int PCRender::Init() {
-    if (!glfwInit())
-        return -1;
-    m_glfwWindow = glfwCreateWindow(m_iWidth, m_iHeight, "SPlayer", NULL, NULL);
-    glfwSetWindowUserPointer(m_glfwWindow, m_sPlayer);
-    glfwSetKeyCallback(m_glfwWindow, keycallback);
-    //glfwSetWindowPos(m_glfwWindow, 300, 200);
-    glfwShowWindow(m_glfwWindow);
-    if (!m_glfwWindow) {
-        printf("Create Window Failed\n");
-        glfwTerminate();
-        return -1;
-    }
-    //glfwMakeContextCurrent(m_glfwWindow);
-
+int PCRender::Init(SWindow *win) {
+    m_sWindow = win;
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
-
     return 0;
 }
 
 int PCRender::Draw(SBucket *bucket) {
-    glfwMakeContextCurrent(m_glfwWindow);
+    glfwMakeContextCurrent(m_sWindow);
     glRasterPos3f(-1.0f,1.0f,0);
     glPixelZoom((float)m_iWidth/(float)m_iWidth, -(float)m_iHeight/(float)m_iHeight);
     CONVERT_YUV420PtoRGB24((unsigned char*)bucket->data,m_chConvertBuffer,m_iWidth,m_iHeight);
     glDrawPixels(m_iWidth, m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, m_chConvertBuffer);
-    glfwSwapBuffers(m_glfwWindow);
+    glfwSwapBuffers(m_sWindow);
     glfwMakeContextCurrent(NULL);
     return 0;
 }
 
 int PCRender::ClearScreen() {
-    glfwMakeContextCurrent(m_glfwWindow);
+    glfwMakeContextCurrent(m_sWindow);
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(m_glfwWindow);
+    glfwSwapBuffers(m_sWindow);
     glfwMakeContextCurrent(NULL);
     return 0;
 }
 
 int PCRender::WaitThreadClose() {
-    while (!glfwWindowShouldClose(m_glfwWindow)) {
-        glfwWaitEvents();    
-    }
-    Stop();
-    glfwHideWindow(m_glfwWindow);
+    //Stop();
     //Render::Stop();
     Render::WaitThreadClose();
     printf("-------------->Render Stoped------------\n");

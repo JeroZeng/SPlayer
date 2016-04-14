@@ -2,11 +2,9 @@
 
 SNode::SNode() {
     bucket = new SBucket();
-    printf("-----------------init bucket: %d------------------\n", bucket);
 }
 
 SNode::~SNode() {
-    printf("-----------------destroy bucket: %d------------------\n", bucket);
     delete bucket;
 }
 

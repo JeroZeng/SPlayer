@@ -4,7 +4,6 @@ Decoder::Decoder(){
 }
 
 Decoder::~Decoder(){
-    printf("-------------------->delete decoder\n");
 }
 
 void Decoder::Init(){
@@ -14,9 +13,7 @@ void Decoder::Init(){
 int Decoder::Start(SQueue *queue){
 
     m_sQueue = queue;
-    printf("-------------------->init render queue\n");
     m_sRenderQueue = new RenderQueue(RQ_SIZE);
-    printf("-------------------->finish init render queue\n");
     pthread_create(&m_thread, NULL, Decoder::Loop, (void*)this);
 
     return 0;
@@ -75,10 +72,8 @@ int Decoder::Stop() {
 void Decoder::ClearMem() {
     if (m_sRenderQueue == NULL)
         return;
-    printf("------------------>delete render Queue\n");
     delete m_sRenderQueue;
     m_sRenderQueue = NULL;
-    printf("------------------>finish delete render Queue\n");
     // free memory
     for (int i=0; i<RQ_SIZE+2; i++) {
         if (m_MemBar[i] != NULL) {

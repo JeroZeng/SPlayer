@@ -11,7 +11,7 @@ Render::Render() {
 Render::~Render() {
 }
 
-int Render::Init() {
+int Render::Init(SWindow *win) {
     return 0;
 }
 

@@ -15,7 +15,7 @@ RawYUV::~RawYUV() {
 int RawYUV::Open(const char *url) {
     m_pFile = fopen(url, "r");
     if (m_pFile != (FILE*)NULL) {
-        printf("------>Open\tYUV<------\n");
+        printf("---------->Open YUV\n\n");
         SetVideoProperty();
     }
     return 0;
@@ -35,7 +35,7 @@ int RawYUV::SetVideoProperty() {
     m_iWidth = w;
     m_iHeight = h;
     m_iFrameSize = w * h * 3 / 2;
-    m_bLoop = true;
+    //m_bLoop = true;
     return 0;
 }
 
