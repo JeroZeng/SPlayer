@@ -14,7 +14,7 @@ public:
     int Open(const char *url);
     int GetOneFrame(SBucket *bucket);
     int SetVideoProperty();
-
+    void Reset();
 
 private:
     FILE *m_pFile;

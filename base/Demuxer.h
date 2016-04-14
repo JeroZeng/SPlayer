@@ -23,6 +23,7 @@ public:
     void SetFrameSize(int size);
     int GetFrameSize();
     void ClearMem();
+    virtual void Reset();
 private:
     static void* Loop(void *arg);
 private:

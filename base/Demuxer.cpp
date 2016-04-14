@@ -69,6 +69,7 @@ void* Demuxer::Loop(void *arg) {
         bucket->size = 0;
         demuxer->m_sQueue->Push(&bucket);
     }
+    demuxer->Reset();
 #ifdef _DEBUG_
     printf("---------->Frame: %d\n\n", frame_num);
 #endif//_DEBUG_
@@ -91,4 +92,7 @@ void Demuxer::ClearMem() {
 
 int Demuxer::Stop() {
     return pthread_kill(m_thread, SIGQUIT);
+}
+
+void Demuxer::Reset() {
 }

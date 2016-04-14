@@ -51,3 +51,10 @@ int RawYUV::GetOneFrame(SBucket *bucket) {
     }
     return m_iFrameSize;
 }
+
+void RawYUV::Reset() {
+    m_iFrameSize = m_iWidth * m_iHeight * 3 / 2;
+    if (m_pFile != NULL) {
+        fseek(m_pFile, 0, SEEK_SET);
+    }
+}
