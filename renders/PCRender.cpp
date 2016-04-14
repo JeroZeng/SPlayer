@@ -80,6 +80,7 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
 PCRender::PCRender(SPlayer *player) {
     if (player != NULL)
         m_sPlayer = player;
+    m_sPainter = new Painter(m_iWidth, m_iHeight);
 }
 
 PCRender::~PCRender() {
@@ -90,12 +91,15 @@ PCRender::~PCRender() {
 }
 
 int PCRender::Init(SWindow *win) {
+    m_sPainter->initGL(win);
     m_sWindow = win;
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
     return 0;
 }
 
 int PCRender::Draw(SBucket *bucket) {
+    m_sPainter->draw((unsigned char*)bucket->data);
+    /*
     glfwMakeContextCurrent(m_sWindow);
     glRasterPos3f(-1.0f,1.0f,0);
     glPixelZoom((float)m_iWidth/(float)m_iWidth, -(float)m_iHeight/(float)m_iHeight);
@@ -103,6 +107,7 @@ int PCRender::Draw(SBucket *bucket) {
     glDrawPixels(m_iWidth, m_iHeight,GL_RGB, GL_UNSIGNED_BYTE, m_chConvertBuffer);
     glfwSwapBuffers(m_sWindow);
     glfwMakeContextCurrent(NULL);
+    */
     return 0;
 }
 

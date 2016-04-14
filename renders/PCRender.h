@@ -2,7 +2,7 @@
 #define _PC_RENDER_
 #include "../SPlayer.h"
 #include "../base/render.h"
-#include "GLFW/glfw3.h"
+#include "Painter.h"
 
 class PCRender : public Render {
 public:
@@ -17,6 +17,7 @@ public:
 
 public:
     SPlayer *m_sPlayer;
+    Painter *m_sPainter;
     unsigned char *m_chConvertBuffer;
 
 private:
