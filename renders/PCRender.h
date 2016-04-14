@@ -17,7 +17,6 @@ public:
     int Exit();
 
 public:
-    SBucket *m_sBucket;
     SPlayer *m_sPlayer;
     unsigned char *m_chConvertBuffer;
 

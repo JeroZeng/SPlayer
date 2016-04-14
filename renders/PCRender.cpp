@@ -90,10 +90,6 @@ PCRender::~PCRender() {
         free(m_chConvertBuffer);
         m_chConvertBuffer = NULL;
     }
-    if (m_sBucket != NULL) {
-        delete m_sBucket;
-        m_sBucket = NULL;
-    }
 }
 
 int PCRender::Init() {
