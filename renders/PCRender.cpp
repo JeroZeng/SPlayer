@@ -80,7 +80,6 @@ void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nW
 PCRender::PCRender(SPlayer *player) {
     if (player != NULL)
         m_sPlayer = player;
-    m_sPainter = new Painter(m_iWidth, m_iHeight);
 }
 
 PCRender::~PCRender() {
@@ -91,6 +90,7 @@ PCRender::~PCRender() {
 }
 
 int PCRender::Init(SWindow *win) {
+    m_sPainter = new Painter(m_iWidth, m_iHeight);
     m_sPainter->initGL(win);
     m_sWindow = win;
     m_chConvertBuffer = (unsigned char*)malloc(m_iWidth * m_iHeight * sizeof(unsigned char)*3);
