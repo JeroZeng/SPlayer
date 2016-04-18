@@ -15,18 +15,22 @@ CXXFLAGS= -framework Cocoa 						\
           -framework CoreVideo					\
           -framework OpenGL						\
           -framework Carbon						\
-          -I../ex_lib/							\
+          -I../ex_lib							\
           -L../ex_lib/GLFW/lib					\
-          -lglfw3
+          -lglfw3								\
+          -I.
 CXX = clang++
 else ifeq ($(ARCH), $(Linux))
 CXX = g++
 endif
 
-all : playDemo testQueue
+all : playDemo testQueue testGLSL
 
 playDemo : $(SRC)
 	$(CXX) $(CXXFLAGS) $(SRC) -o ../playDemo
 
 testQueue : testQueue.cpp ../base/Queue.cpp
 	clang++ testQueue.cpp ../base/Queue.cpp -o ../testQueue
+
+testGLSL : testGLSL.cpp glad.c
+	$(CXX) $(CXXFLAGS) testGLSL.cpp glad.c -o testGLSL

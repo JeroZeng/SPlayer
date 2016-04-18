@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <pthread.h>
 
-#include "glad.h"
-#include "glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #define ATTRIB_VERTEX 3
 #define ATTRIB_TEXTURE 4
@@ -10,9 +11,6 @@ static const char *vs =
     "attribute vec4 vertexIn;"
     "attribute vec2 textureIn;"
     "varying vec2 textureOut;"
-    "in float x;\n"
-    "in float y;\n"
-    "in float z;\n"
     "void main()"
     "{"
     "     gl_Position = vertexIn;"
@@ -133,7 +131,11 @@ const int width = 352, height = 288;
 unsigned char yuv[width*height * 3 / 2];
 FILE *fp = NULL;
 
+#ifdef __APPLE__
+void* ThreadFun(void *arg) {
+#else
 DWORD WINAPI ThreadFun(LPVOID pM) {
+#endif
     glfwMakeContextCurrent(window);
     glfwSetTime(0.04);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -216,7 +218,7 @@ DWORD WINAPI ThreadFun(LPVOID pM) {
 
 int main(int argc, char** argv)
 {
-    fopen_s(&fp, "SOCCER_352x288_30_orig_02.yuv", "rb");
+    fp = fopen("../flower_352_288.yuv", "rb");
 
     if (!glfwInit())
         return -1;
@@ -265,7 +267,12 @@ int main(int argc, char** argv)
 
     glfwMakeContextCurrent(NULL);
 
+#ifdef __APPLE__
+    pthread_t thr;
+    pthread_create(&thr, NULL, ThreadFun, NULL);
+#else
     CreateThread(NULL, 0, ThreadFun, NULL, 0, NULL);
+#endif
 
     while (!glfwWindowShouldClose(window))
     {
