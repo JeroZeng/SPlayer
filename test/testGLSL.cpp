@@ -4,16 +4,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define ATTRIB_VERTEX 3
-#define ATTRIB_TEXTURE 4
-
 static const char *vs =
-    "attribute vec4 vertexIn;"
+    "attribute vec2 vertexIn;"
     "attribute vec2 textureIn;"
     "varying vec2 textureOut;"
     "void main()"
     "{"
-    "     gl_Position = vertexIn;"
+    "     gl_Position = vec4(vertexIn, 0.0, 1.0);;"
     "     textureOut = textureIn;"
     "}";
 
@@ -82,8 +79,6 @@ static GLuint make_shader_program(const char* vs_text, const char* fs_text)
                 /* attach both shader and link */
                 glAttachShader(program, vertex_shader);
                 glAttachShader(program, fragment_shader);
-                glBindAttribLocation(program, ATTRIB_VERTEX, "vertexIn");
-                glBindAttribLocation(program, ATTRIB_TEXTURE, "textureIn");
                 glLinkProgram(program);
                 glGetProgramiv(program, GL_LINK_STATUS, &program_ok);
 
@@ -147,6 +142,10 @@ DWORD WINAPI ThreadFun(LPVOID pM) {
         }
         glUseProgram(shader_program);
 
+        int w, h;
+        glfwGetFramebufferSize(window, &w, &h);
+        glViewport(0, 0, w, h);
+
         glClear(GL_COLOR_BUFFER_BIT);
         CheckErr(glUseProgram);
 
@@ -154,25 +153,6 @@ DWORD WINAPI ThreadFun(LPVOID pM) {
         {
             fseek(fp, 0, SEEK_SET);
         }
-
-        static const GLfloat vertexVertices[] = {
-            -1.0f, -1.0f,
-            1.0f, -1.0f,
-            -1.0f, 1.0f,
-            1.0f, 1.0f,
-        };
-        static const GLfloat textureVertices[] = {
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-        };
-        glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, vertexVertices);
-        CheckErr(glVertexAttribPointer);
-        //Enable it
-        glEnableVertexAttribArray(ATTRIB_VERTEX);
-        glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, 0, 0, textureVertices);
-        glEnableVertexAttribArray(ATTRIB_TEXTURE);
 
         glActiveTexture(GL_TEXTURE0);
         CheckErr(glActiveTexture);
@@ -218,12 +198,22 @@ DWORD WINAPI ThreadFun(LPVOID pM) {
 
 int main(int argc, char** argv)
 {
+    static const float vertices[] =
+    {
+        -1.0f, -1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, 0.0f, 0.0f,
+        1.0f,  1.0f, 1.0f, 0.0f
+    };
+    GLuint vertex_buffer;
+    GLint vpos_loc, tbuf_loc;
+
     fp = fopen("../flower_352_288.yuv", "rb");
 
     if (!glfwInit())
         return -1;
 
-    window = glfwCreateWindow(width, height, "GLFW OpenGL3 Heightmap demo", NULL, NULL);
+    window = glfwCreateWindow(width, height, "SPlayer", NULL, NULL);
 
     if (!window)
     {
@@ -234,6 +224,10 @@ int main(int argc, char** argv)
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
+    glGenBuffers(1, &vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
     /* Prepare opengl resources for rendering */
     shader_program = make_shader_program(vs, fs);
 
@@ -242,6 +236,16 @@ int main(int argc, char** argv)
         glfwTerminate();
         return -1;
     }
+
+    vpos_loc = glGetAttribLocation(shader_program, "vertexIn");
+    glEnableVertexAttribArray(vpos_loc);
+    glVertexAttribPointer(vpos_loc, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(float) * 4, (void*) 0);
+
+    tbuf_loc = glGetAttribLocation(shader_program, "textureIn");
+    glEnableVertexAttribArray(tbuf_loc);
+    glVertexAttribPointer(tbuf_loc, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(float) * 4, (void*) (sizeof(float) * 2));
 
     //Init Texture
     glGenTextures(1, &m_textureY);
