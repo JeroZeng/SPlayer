@@ -144,7 +144,8 @@ DWORD WINAPI ThreadFun(LPVOID pM) {
 
         int w, h;
         glfwGetFramebufferSize(window, &w, &h);
-        glViewport(0, 0, w, h);
+        double rate = (double)w/width>(double)h/height?(double)h/height:(double)w/width;
+        glViewport((w-width*rate)/2, (h-height*rate)/2, width*rate, height*rate);
 
         glClear(GL_COLOR_BUFFER_BIT);
         CheckErr(glUseProgram);
