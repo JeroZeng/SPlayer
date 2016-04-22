@@ -39,6 +39,7 @@ public:
     GLuint MakeShader(GLenum type, const char *ch);
     GLuint MakeShaderProgram(const char *vs, const char *fs);
     int Draw(SBucket *bucket);
+    int ResetClock();
     int ClearScreen();
     int WaitThreadClose();
     bool ShouldExit();

@@ -24,6 +24,7 @@ void SPlayer::Init(SWindow *win) {
     render->m_iWidth = decoder->m_iWidth = demuxer->m_iWidth;
     render->m_iHeight = decoder->m_iHeight = demuxer->m_iHeight;
     render->Init(win);
+    render->SetFPS(demuxer->m_dFPS);
 }
 
 int SPlayer::Play() {

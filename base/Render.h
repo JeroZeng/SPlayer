@@ -15,6 +15,7 @@ class Render : private Base {
 public:
     int m_iWidth;
     int m_iHeight;
+    double m_dFPS;
     RenderQueue *m_sRenderQueue;
 
 public:
@@ -24,6 +25,7 @@ public:
     USING_BASE;
 
     virtual int Init(SWindow *win);
+    virtual void SetFPS(double fps);
     int Start(RenderQueue *queue);
     virtual int Draw(SBucket *bucket);
     virtual int ClearScreen();

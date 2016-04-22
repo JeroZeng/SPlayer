@@ -9,10 +9,15 @@ Render::Render() {
 }
 
 Render::~Render() {
+    m_dFPS = 25;
 }
 
 int Render::Init(SWindow *win) {
     return 0;
+}
+
+void Render::SetFPS(double fps) {
+    m_dFPS = fps;
 }
 
 int Render::Start(RenderQueue *queue) {

@@ -182,8 +182,9 @@ int PCRender::Draw(SBucket *bucket) {
     glUniform1i(textureUniformV, 2);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+    while(glfwGetTime() < 1/m_dFPS);
     glfwSwapBuffers(m_sWindow);
+    glfwSetTime(0.0);
     glfwMakeContextCurrent(NULL);
 
     return 0;

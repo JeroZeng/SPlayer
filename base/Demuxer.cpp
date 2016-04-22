@@ -3,7 +3,8 @@
 
 #define BUFFER8  2 * 1024 * 1024
 
-Demuxer::Demuxer() {
+Demuxer::Demuxer():
+    m_dFPS(25) {
     for (int i=0; i<5; i++) {
         m_MemBar[i] = NULL;
     }

@@ -10,6 +10,7 @@ public:
     SQueue *m_sQueue;
     int m_iWidth;
     int m_iHeight;
+    double m_dFPS;
 public:
     Demuxer();
     ~Demuxer();
