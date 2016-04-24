@@ -51,9 +51,8 @@ public:
 private:
     SWindow *m_sWindow; 
     GLuint m_shaderProgram;
-    GLuint m_textureY;
-    GLuint m_textureU;
-    GLuint m_textureV;
+    GLuint m_vertexBuffer;
+    GLuint m_textures[3];
 };
 
 #endif//_PC_RENDER_

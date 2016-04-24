@@ -15,6 +15,17 @@ PCRender::PCRender(SPlayer *player) {
 }
 
 PCRender::~PCRender() {
+    glfwMakeContextCurrent(m_sWindow);
+    if (glIsTexture(m_textures[0])) {
+        glDeleteTextures(3, m_textures);
+    }
+    if (glIsBuffer(m_vertexBuffer)) {
+        glDeleteBuffers(1, &m_vertexBuffer);
+    }
+    if (glIsProgram(m_shaderProgram)) {
+        glDeleteProgram(m_shaderProgram);
+    }
+    glfwMakeContextCurrent(NULL);
 }
 
 
@@ -90,9 +101,12 @@ GLuint PCRender::MakeShaderProgram(const char* vs_text, const char* fs_text)
     {
         fprintf(stderr, "ERROR: Unable to load vertex shader\n");
     }
+    glDeleteShader(fragment_shader);
+    glDeleteShader(vertex_shader);
     return program;
 }
 int PCRender::Init(SWindow *win) {
+    GLint vpos_loc, tbuf_loc;
     m_sWindow = win;
 
     glfwSetWindowSize(m_sWindow, m_iWidth, m_iHeight);
@@ -100,14 +114,11 @@ int PCRender::Init(SWindow *win) {
 ;
     glfwSetWindowPos(m_sWindow, (mode->width-m_iWidth)/2, (mode->height-m_iHeight)/2);
 
-    GLuint vertex_buffer;
-    GLint vpos_loc, tbuf_loc;
-
     glfwMakeContextCurrent(m_sWindow);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    glGenBuffers(1, &vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glGenBuffers(1, &m_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     m_shaderProgram = MakeShaderProgram(vs, fs);
@@ -126,22 +137,18 @@ int PCRender::Init(SWindow *win) {
                           sizeof(float) * 4, (void*) (sizeof(float) * 2));
 
     //Init Texture
-    glGenTextures(1, &m_textureY);
-    glBindTexture(GL_TEXTURE_2D, m_textureY);
+    glGenTextures(3, m_textures);
+    glBindTexture(GL_TEXTURE_2D, m_textures[0]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glGenTextures(1, &m_textureU);
-    glBindTexture(GL_TEXTURE_2D, m_textureU);
+    glBindTexture(GL_TEXTURE_2D, m_textures[1]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glGenTextures(1, &m_textureV);
-    glBindTexture(GL_TEXTURE_2D, m_textureV);
+    glBindTexture(GL_TEXTURE_2D, m_textures[2]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -164,13 +171,13 @@ int PCRender::Draw(SBucket *bucket) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_textureY);
+    glBindTexture(GL_TEXTURE_2D, m_textures[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_iWidth, m_iHeight, 0, GL_RED, GL_UNSIGNED_BYTE, bucket->data);
     GLuint textureUniformY = glGetUniformLocation(m_shaderProgram, "tex_y");
     glUniform1i(textureUniformY, 0);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_textureU);
+    glBindTexture(GL_TEXTURE_2D, m_textures[1]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
                  m_iWidth / 2, m_iHeight / 2, 0, GL_RED,
                  GL_UNSIGNED_BYTE, bucket->data + m_iWidth * m_iHeight);
@@ -178,7 +185,7 @@ int PCRender::Draw(SBucket *bucket) {
     glUniform1i(textureUniformU, 1);
 
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, m_textureV);
+    glBindTexture(GL_TEXTURE_2D, m_textures[2]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
                  m_iWidth / 2,
                  m_iHeight / 2, 0, GL_RED,
