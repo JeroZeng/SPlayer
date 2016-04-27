@@ -20,7 +20,7 @@ SPlayer::~SPlayer(){
 }
 
 void SPlayer::Init(SWindow *win) {
-    demuxer->Open("../flower_352_288.yuv");
+    demuxer->Open("../test.yuv");
     render->m_iWidth = decoder->m_iWidth = demuxer->m_iWidth;
     render->m_iHeight = decoder->m_iHeight = demuxer->m_iHeight;
     render->Init(win);
