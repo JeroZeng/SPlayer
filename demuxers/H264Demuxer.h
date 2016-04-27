@@ -12,6 +12,7 @@ public:
     H264Demuxer();
     int Open(const char *url);
     int GetOneFrame(SBucket *bucket);
+    inline int GetNextFrameSize();
     void Reset();
 
 private:
