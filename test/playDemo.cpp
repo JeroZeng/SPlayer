@@ -43,7 +43,7 @@ void waitForWindowClose(SWindow *w) {
 
 int main(int argc, char *argv[]){
     printf("%d\t%s\n", argc, argv[0]);
-    SPlayer *player = new SPlayer("test.mp4");
+    SPlayer *player = new SPlayer(argv[1]);
     SWindow *win = createWindow(player);
     player->Init(win);
     player->Play();
