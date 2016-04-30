@@ -37,21 +37,24 @@ void* Decoder::Loop(void *arg){
     SBucket *db = new SBucket();
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
-    decoder->m_MemBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
+    if (decoder->m_iWidth*decoder->m_iHeight>0)
+        decoder->m_MemBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
                     sizeof(char) * 3 / 2);
     rb->data = decoder->m_MemBar[0];
     for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
-        decoder->DecodeOneFrame(db, rb);
-        decoder->m_sRenderQueue->Push(&rb);
-        decoder->m_MemBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
-                        sizeof(char) * 3 / 2);
+        if (decoder->DecodeOneFrame(db, rb) == RES_OK)
+            decoder->m_sRenderQueue->Push(&rb);
+        if (decoder->m_iWidth*decoder->m_iHeight>0)
+            decoder->m_MemBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight
+                        * sizeof(char) * 3 / 2);
         rb->data = decoder->m_MemBar[i];
         decoder->m_sQueue->Pop(&db);
     }
     while(db->size > 0){
-        decoder->DecodeOneFrame(db, rb);
-        if(decoder->m_sRenderQueue->Push(&rb)) {
-            break;
+        if (decoder->DecodeOneFrame(db, rb) == RES_OK) {
+            if(decoder->m_sRenderQueue->Push(&rb)) {
+                break;
+            }
         }
         decoder->m_sQueue->Pop(&db);
     }

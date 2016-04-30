@@ -61,6 +61,7 @@ int H264Demuxer::GetOneFrame(SBucket *bucket) {
         memcpy(bucket->data, m_MemBuf, curFrameSize);
         m_iUsedSize += curFrameSize;
         GetNextFrameSize();
+        printf("------------------>%d\n", m_iNextFrameSize);
         return m_iNextFrameSize;
     }
 }

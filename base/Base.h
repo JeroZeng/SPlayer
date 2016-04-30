@@ -2,6 +2,7 @@
 #define _BASE_H_
 #include <pthread.h>
 #include <semaphore.h>
+#define RES_OK 0
 #define USING_BASE using Base::Resume; \
                    using Base::Pause; \
                    using Base::Stop; \
