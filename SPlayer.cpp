@@ -2,15 +2,17 @@
 #include "demuxers/Mp4Demuxer.h"
 #include "demuxers/RawYUV.h"
 #include "demuxers/H264Demuxer.h"
+#include "decoders/H264Decoder.h"
 #include "renders/PCRender.h"
 
 SPlayer::SPlayer(const char *url){
     m_chUrl = url;
     //demuxer = new Demuxer();
     //demuxer = new Mp4Demuxer();
-    demuxer = new RawYUV();
-    //demuxer = new H264Demuxer();
-    decoder = new Decoder();
+    //demuxer = new RawYUV();
+    demuxer = new H264Demuxer();
+    decoder = new H264Decoder();
+    //decoder = new Decoder();
     //render  = new Render();
     render  = new PCRender(this);
 }
@@ -23,6 +25,7 @@ SPlayer::~SPlayer(){
 
 void SPlayer::Init(SWindow *win) {
     demuxer->Open(m_chUrl);
+    decoder->Init();
     render->m_iWidth = decoder->m_iWidth = demuxer->m_iWidth;
     render->m_iHeight = decoder->m_iHeight = demuxer->m_iHeight;
     render->Init(win);

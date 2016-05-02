@@ -31,6 +31,7 @@ int H264Demuxer::GetNextFrameSize() {
             break;
         }
     }
+    printf("------------------>i: %d\n", i);
     if (i == BUFFER_SIZE-m_iUsedSize-1) {
         m_bReadFile = true;
         fseek(m_pFile, m_iUsedSize-BUFFER_SIZE, SEEK_CUR);
@@ -57,11 +58,11 @@ int H264Demuxer::GetOneFrame(SBucket *bucket) {
         if (m_bReadFile)
             continue;
         bucket->size = curFrameSize;
+        printf("------------------>%d\n", bucket->size);
         m_iUsedSize++;
-        memcpy(bucket->data, m_MemBuf, curFrameSize);
+        memcpy(bucket->data, m_MemBuf+m_iUsedSize, bucket->size);
         m_iUsedSize += curFrameSize;
-        GetNextFrameSize();
-        printf("------------------>%d\n", m_iNextFrameSize);
+        //printf("------------------>%d\n", m_iNextFrameSize);
         return m_iNextFrameSize;
     }
 }

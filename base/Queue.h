@@ -28,7 +28,7 @@ private:
 
 class SBucket {
 public:
-    char *data;
+    unsigned char *data;
     int   size;
 };
 

@@ -33,7 +33,7 @@ private:
     static void* Loop(void *arg);
 
 private:
-    char *m_MemBar[RQ_SIZE+2];
+    unsigned char *m_MemBar[RQ_SIZE+2];
 
 };
 

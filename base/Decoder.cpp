@@ -38,15 +38,15 @@ void* Decoder::Loop(void *arg){
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
     if (decoder->m_iWidth*decoder->m_iHeight>0)
-        decoder->m_MemBar[0] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight*
-                    sizeof(char) * 3 / 2);
+        decoder->m_MemBar[0] = (unsigned char*)MALLOC(decoder->m_iWidth*
+                    decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);
     rb->data = decoder->m_MemBar[0];
     for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
         if (decoder->DecodeOneFrame(db, rb) == RES_OK)
             decoder->m_sRenderQueue->Push(&rb);
         if (decoder->m_iWidth*decoder->m_iHeight>0)
-            decoder->m_MemBar[i] = (char*)MALLOC(decoder->m_iWidth*decoder->m_iHeight
-                        * sizeof(char) * 3 / 2);
+            decoder->m_MemBar[i] = (unsigned char*)MALLOC(decoder->m_iWidth*
+                    decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);
         rb->data = decoder->m_MemBar[i];
         decoder->m_sQueue->Pop(&db);
     }

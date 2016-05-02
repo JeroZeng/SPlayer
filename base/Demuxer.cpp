@@ -37,7 +37,7 @@ void* Demuxer::Loop(void *arg) {
     int frame_num = 0;
 #endif//_Debug_
     int iMemBarUsed = 0;
-    demuxer->m_MemBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
+    demuxer->m_MemBar[i] = (unsigned char*)MALLOC(BUFFER8 * sizeof(unsigned char));
     SBucket *bucket = new SBucket;
     bucket->data = demuxer->m_MemBar[i];
     int nextFrameSize = demuxer->GetOneFrame(bucket);
@@ -55,7 +55,7 @@ void* Demuxer::Loop(void *arg) {
         if (iMemBarUsed + nextFrameSize > BUFFER8) {
             i++;
             if (demuxer->m_MemBar[i] == NULL) {
-                demuxer->m_MemBar[i] = (char*)MALLOC(BUFFER8 * sizeof(char));
+                demuxer->m_MemBar[i] = (unsigned char*)MALLOC(BUFFER8*sizeof(unsigned char));
             }
             bucket->data = demuxer->m_MemBar[i];
             iMemBarUsed = 0;

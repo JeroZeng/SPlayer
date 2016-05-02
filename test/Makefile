@@ -7,6 +7,7 @@ SRC = playDemo.cpp								\
      ../*.cpp									\
      ../base/*.cpp								\
      ../demuxers/*.cpp							\
+     ../decoders/*.cpp                          \
      ../renders/*.cpp
 
 ifeq ($(ARCH), $(MacOS))
@@ -18,7 +19,13 @@ CXXFLAGS= -framework Cocoa 						\
           -I../ex_lib							\
           -L../ex_lib/GLFW/lib					\
           -lglfw3								\
-          -I.
+          -L../ex_lib/openh264/                 \
+          -lcommon                              \
+          -ldecoder                             \
+          -I.                                   \
+          -m32                                  \
+          -arch i386                            \
+          -read_only_relocs suppress
 CXX = clang++
 else ifeq ($(ARCH), $(Linux))
 CXX = g++
