@@ -30,7 +30,7 @@ int RawYUV::SetVideoProperty() {
     std::cin>>h;
     std::cout<<std::endl;
 #else
-    w = 352, h = 288;
+    w = 176, h = 144;
 #endif
     m_iWidth = w;
     m_iHeight = h;

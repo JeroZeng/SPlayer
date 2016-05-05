@@ -21,7 +21,7 @@ public:
 
     USING_BASE;
 
-    void Init();
+    virtual int Init();
     int Start(SQueue *queue);
     int Stop();
     void ClearMem();

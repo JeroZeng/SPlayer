@@ -1,5 +1,9 @@
 #include "H264Decoder.h"
 
+H264Decoder::H264Decoder(SPlayer *p){
+    player = p;
+}
+
 H264Decoder::~H264Decoder() {
     if (m_pDecoder) {
         m_pDecoder->Uninitialize();
@@ -26,18 +30,38 @@ int H264Decoder::Init() {
 }
 
 int H264Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
-    unsigned char* dst = NULL;
-    printf("------------------->DecodeOne Frame: %d\n", db->size);
-    m_pDecoder->DecodeFrameNoDelay(db->data, db->size, &dst, &m_sDstBufInfo);
+    unsigned char *dst[3] = {NULL, NULL, NULL};
+    unsigned char *ptr = NULL;
+    int iStride[2];
+    m_pDecoder->DecodeFrameNoDelay(db->data, db->size, dst, &m_sDstBufInfo);
+    printf("------------------->Decode Frame: %d\n", db->size);
     if (m_sDstBufInfo.iBufferStatus == 1) {
-        printf("------------------->Decode One Frame\n");
         if (rb->data == NULL) {
             m_iWidth = m_sDstBufInfo.UsrData.sSystemBuffer.iWidth;
             m_iHeight = m_sDstBufInfo.UsrData.sSystemBuffer.iHeight;
-            rb->size = m_iWidth * m_iHeight;
+            player->render->m_iWidth = player->demuxer->m_iWidth = m_iWidth;
+            player->render->m_iHeight = player->demuxer->m_iHeight = m_iHeight;
+            rb->size = m_iWidth * m_iHeight * 3/2;
             rb->data = (unsigned char*)malloc(rb->size*sizeof(unsigned char));
         }
-        memcpy(rb->data, dst, rb->size);
+        iStride[0] = m_sDstBufInfo.UsrData.sSystemBuffer.iStride[0];
+        iStride[1] = m_sDstBufInfo.UsrData.sSystemBuffer.iStride[1];
+        rb->size = m_iWidth * m_iHeight *3/2;
+        int frameSize = m_iWidth * m_iHeight;
+        
+        ptr = dst[0];
+        for (int i=0; i<m_iHeight; i++) {
+            memcpy(rb->data+m_iWidth*i, ptr+i*iStride[0], m_iWidth);
+        }
+        ptr = dst[1];
+        for (int i=0; i<m_iHeight/2; i++) {
+            memcpy(rb->data+frameSize+m_iWidth/2*i, ptr+i*iStride[1], m_iWidth/2);
+        }
+        ptr = dst[2];
+        for (int i=0; i<m_iHeight/2; i++) {
+            memcpy(rb->data+frameSize*5/4+m_iWidth/2*i, ptr+i*iStride[1], m_iWidth/2);
+        }
+
         return RES_OK;
     }
     return 1;

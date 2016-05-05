@@ -28,7 +28,6 @@ int Render::Start(RenderQueue *queue) {
 }
 
 void* Render::Loop(void *arg) {
-
     Render *render = (Render*)arg;
     render->SetStatus(StatusPlay);
     SBucket *bucket = new SBucket();

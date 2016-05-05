@@ -6,8 +6,8 @@ Decoder::Decoder(){
 Decoder::~Decoder(){
 }
 
-void Decoder::Init(){
-
+int Decoder::Init(){
+    return  0;
 }
 
 int Decoder::Start(SQueue *queue){
@@ -41,9 +41,11 @@ void* Decoder::Loop(void *arg){
         decoder->m_MemBar[0] = (unsigned char*)MALLOC(decoder->m_iWidth*
                     decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);
     rb->data = decoder->m_MemBar[0];
-    for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
-        if (decoder->DecodeOneFrame(db, rb) == RES_OK)
+    for (int i=0; (i<RQ_SIZE+2)&&(db->size>0); ) {
+        if (decoder->DecodeOneFrame(db, rb) == RES_OK) {
             decoder->m_sRenderQueue->Push(&rb);
+            i++;
+        }
         if (decoder->m_iWidth*decoder->m_iHeight>0)
             decoder->m_MemBar[i] = (unsigned char*)MALLOC(decoder->m_iWidth*
                     decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);

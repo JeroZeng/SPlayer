@@ -11,9 +11,9 @@ SPlayer::SPlayer(const char *url){
     //demuxer = new Mp4Demuxer();
     //demuxer = new RawYUV();
     demuxer = new H264Demuxer();
-    decoder = new H264Decoder();
+    decoder = new H264Decoder(this);
     //decoder = new Decoder();
-    //render  = new Render();
+    render  = new Render();
     render  = new PCRender(this);
 }
 
