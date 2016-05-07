@@ -34,7 +34,7 @@ int H264Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
     unsigned char *ptr = NULL;
     int iStride[2];
     m_pDecoder->DecodeFrameNoDelay(db->data, db->size, dst, &m_sDstBufInfo);
-    printf("------------------->Decode Frame: %d\n", db->size);
+    //printf("------------------->Decode Frame: %d\n", db->size);
     if (m_sDstBufInfo.iBufferStatus == 1) {
         if (rb->data == NULL) {
             m_iWidth = m_sDstBufInfo.UsrData.sSystemBuffer.iWidth;

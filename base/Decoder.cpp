@@ -60,6 +60,7 @@ void* Decoder::Loop(void *arg){
         }
         decoder->m_sQueue->Pop(&db);
     }
+    printf("---------------->Stop Decoder\n");
     decoder->m_sQueue->StopReader();
     if (db->size == 0) {
         rb->size = 0;

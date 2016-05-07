@@ -109,10 +109,11 @@ int PCRender::Init(SWindow *win) {
     GLint vpos_loc, tbuf_loc;
     m_sWindow = win;
 
-    glfwSetWindowSize(m_sWindow, m_iWidth, m_iHeight);
-    GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
-;
-    glfwSetWindowPos(m_sWindow, (mode->width-m_iWidth)/2, (mode->height-m_iHeight)/2);
+    if (m_iWidth * m_iHeight > 0) {
+        glfwSetWindowSize(m_sWindow, m_iWidth, m_iHeight);
+        GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(m_sWindow, (mode->width-m_iWidth)/2, (mode->height-m_iHeight)/2);
+    }
 
     glfwMakeContextCurrent(m_sWindow);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

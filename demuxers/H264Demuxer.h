@@ -3,7 +3,7 @@
 
 #include "../base/demuxer.h"
 
-#define BUFFER_SIZE (2 << 20)
+#define BUFFER_SIZE (2 << 12)
 
 class H264Demuxer: public Demuxer {
 public:
@@ -18,6 +18,7 @@ public:
 private:
     FILE *m_pFile;
     unsigned char *m_MemBuf;
+    int m_iReadSize;
     bool m_bReadFile;
     uint32_t m_iUsedSize;
     uint32_t m_iNextFrameSize;
