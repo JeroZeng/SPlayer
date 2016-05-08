@@ -2,6 +2,9 @@
 
 H264Decoder::H264Decoder(SPlayer *p){
     player = p;
+#ifdef _DUMP_264_FILE_
+    m_pDumpFile = fopen("dump.264", "wb");
+#endif
 }
 
 H264Decoder::~H264Decoder() {
@@ -9,6 +12,12 @@ H264Decoder::~H264Decoder() {
         m_pDecoder->Uninitialize();
         WelsDestroyDecoder(m_pDecoder);
     }
+#ifdef _DUMP_264_FILE_
+    if (m_pDumpFile) {
+        fclose(m_pDumpFile);
+        m_pDumpFile = NULL;
+    }
+#endif
 }
 
 int H264Decoder::Init() {
@@ -33,6 +42,11 @@ int H264Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
     unsigned char *dst[3] = {NULL, NULL, NULL};
     unsigned char *ptr = NULL;
     int iStride[2];
+#ifdef _DUMP_264_FILE_
+    unsigned char ch = 0xFF;
+    fwrite(&ch, 1, 1, m_pDumpFile);
+    fwrite(db->data, db->size, 1, m_pDumpFile);
+#endif
     m_pDecoder->DecodeFrameNoDelay(db->data, db->size, dst, &m_sDstBufInfo);
     //printf("------------------->Decode Frame: %d\n", db->size);
     if (m_sDstBufInfo.iBufferStatus == 1) {

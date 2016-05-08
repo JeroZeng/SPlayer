@@ -3,7 +3,7 @@
 
 #include "../base/demuxer.h"
 
-#define BUFFER_SIZE (2 << 12)
+#define BUFFER_SIZE (1 << 26)
 
 class H264Demuxer: public Demuxer {
 public:

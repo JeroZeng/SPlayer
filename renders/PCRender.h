@@ -2,6 +2,7 @@
 #define _PC_RENDER_
 #include "../SPlayer.h"
 #include "../base/render.h"
+//#define _DUMP_YUV_FILE_
 
 static const char *vs =
     "attribute vec2 vertexIn;"
@@ -23,10 +24,13 @@ static const char *fs =
     "    vec3 yuv;"
     "    vec3 rgb;"
     "    yuv.x = texture2D(tex_y, textureOut).x;"
+#if 1
     "    yuv.y = texture2D(tex_u, textureOut).r - 0.5;"
     "    yuv.z = texture2D(tex_v, textureOut).r - 0.5;"
-    //"    yuv.y = 0.0;"
-    //"    yuv.z = 0.0;"
+#else
+    "    yuv.y = 0.0;"
+    "    yuv.z = 0.0;"
+#endif
     "    rgb.r = yuv.x + (1.403 * yuv.z);"
     "    rgb.g = yuv.x - (0.344 * yuv.y) - (0.714 * yuv.z);"
     "    rgb.b = yuv.x + (1.770 * yuv.y);"
@@ -49,6 +53,9 @@ public:
 
 public:
     SPlayer *m_sPlayer;
+#ifdef _DUMP_YUV_FILE_
+    FILE *m_pDumpFile;
+#endif
 
 private:
     SWindow *m_sWindow; 

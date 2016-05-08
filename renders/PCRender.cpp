@@ -12,9 +12,18 @@ static const float vertices[] =
 PCRender::PCRender(SPlayer *player) {
     if (player != NULL)
         m_sPlayer = player;
+#ifdef _DUMP_YUV_FILE_
+    m_pDumpFile = fopen("dump.yuv", "wb");
+#endif
 }
 
 PCRender::~PCRender() {
+#ifdef _DUMP_YUV_FILE_
+    if(m_pDumpFile) {
+        fclose(m_pDumpFile);
+        m_pDumpFile = NULL;
+    }
+#endif
     glfwMakeContextCurrent(m_sWindow);
     if (glIsTexture(m_textures[0])) {
         glDeleteTextures(3, m_textures);
@@ -27,7 +36,6 @@ PCRender::~PCRender() {
     }
     glfwMakeContextCurrent(NULL);
 }
-
 
 GLuint PCRender::MakeShader(GLenum type, const char* text)
 {
@@ -161,6 +169,11 @@ int PCRender::Init(SWindow *win) {
 }
 
 int PCRender::Draw(SBucket *bucket) {
+#ifdef _DUMP_YUV_FILE_
+    if (m_pDumpFile) {
+        fwrite(bucket->data, m_iWidth*m_iHeight*3/2, 1, m_pDumpFile);
+    }
+#endif
     glfwMakeContextCurrent(m_sWindow);
     glUseProgram(m_shaderProgram);
 

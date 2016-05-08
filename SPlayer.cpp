@@ -9,10 +9,13 @@ SPlayer::SPlayer(const char *url){
     m_chUrl = url;
     //demuxer = new Demuxer();
     //demuxer = new Mp4Demuxer();
-    //demuxer = new RawYUV();
+#if 0
+    demuxer = new RawYUV();
+    decoder = new Decoder();
+#else
     demuxer = new H264Demuxer();
     decoder = new H264Decoder(this);
-    //decoder = new Decoder();
+#endif
     render  = new Render();
     render  = new PCRender(this);
 }

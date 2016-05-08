@@ -4,7 +4,7 @@ H264Demuxer::H264Demuxer() {
     m_bReadFile = true;
     m_iUsedSize = 0;
     m_iNextFrameSize = 0;
-    m_dFPS = 25.0;
+    m_dFPS = 29.90f;
     m_iWidth = 0;
     m_iHeight = 0;
     m_iReadSize = BUFFER_SIZE;
@@ -36,7 +36,6 @@ int H264Demuxer::GetNextFrameSize() {
             break;
         }
     }
-    printf("%d\t%d\t%d\n", i, m_iReadSize-m_iUsedSize, m_iUsedSize);
     if (i == m_iReadSize-m_iUsedSize) {
         if (m_iReadSize != BUFFER_SIZE) {
             m_iNextFrameSize = i;
@@ -54,6 +53,7 @@ int H264Demuxer::GetNextFrameSize() {
 }
 
 int H264Demuxer::GetOneFrame(SBucket *bucket) {
+    //sleep(3);
     bool bFlag= false;
     while (true) {
         if (m_bReadFile) {
@@ -66,10 +66,8 @@ int H264Demuxer::GetOneFrame(SBucket *bucket) {
                 size = ftell(m_pFile);
                 size -= pos;
                 m_iReadSize = size;
-                printf("-------------->Read One Frame:%d\n", size);
                 fseek(m_pFile, -1*size, SEEK_END);
                 size = fread(m_MemBuf, size, 1, m_pFile);
-                printf("-------------->Read One Frame:%d\n", m_iNextFrameSize);
                 m_bReadFile = false;
             }
         }
@@ -97,5 +95,8 @@ void H264Demuxer::Reset() {
     if (m_pFile != NULL) {
         fseek(m_pFile, 0, SEEK_SET);
     }
-
+    m_bReadFile = true;
+    m_iUsedSize = 0;
+    m_iNextFrameSize = 0;
+    m_iReadSize = BUFFER_SIZE;
 }

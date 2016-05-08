@@ -6,7 +6,8 @@
 Demuxer::Demuxer():
     m_dFPS(25) {
     for (int i=0; i<5; i++) {
-        m_MemBar[i] = NULL;
+        m_MemBar[0][i] = NULL;
+        m_MemBar[1][i] = NULL;
     }
 }
 
@@ -32,32 +33,37 @@ int Demuxer::GetOneFrame(SBucket *bucket){
 
 void* Demuxer::Loop(void *arg) {
     Demuxer *demuxer = (Demuxer*)arg;
-    int i = 0;
+    int i = 0; bool flag = 0;
 #ifdef _DEBUG_
     int frame_num = 0;
 #endif//_Debug_
     int iMemBarUsed = 0;
-    demuxer->m_MemBar[i] = (unsigned char*)MALLOC(BUFFER8 * sizeof(unsigned char));
+    demuxer->m_MemBar[0][i] = (unsigned char*)MALLOC(BUFFER8*sizeof(unsigned char));
+    demuxer->m_MemBar[1][i] = (unsigned char*)MALLOC(BUFFER8*sizeof(unsigned char));
     SBucket *bucket = new SBucket;
-    bucket->data = demuxer->m_MemBar[i];
+    bucket->data = demuxer->m_MemBar[flag][i];
     int nextFrameSize = demuxer->GetOneFrame(bucket);
+#ifdef _DEBUG_
+    frame_num++;
+#endif//_Debug_
     iMemBarUsed += bucket->size;
     while(nextFrameSize > 0){
         //printf("------>i_size: %d\t<------\n", bucket->size);
         if (demuxer->m_sQueue->Push(&bucket)) {
             break;
         }
-        if (bucket->data == demuxer->m_MemBar[0]) {
+        if (bucket->data == demuxer->m_MemBar[flag][0]) {
             i = 0;
+            flag = !flag;
             iMemBarUsed = 0;
         }
-        bucket->data = demuxer->m_MemBar[i]+iMemBarUsed;
+        bucket->data = demuxer->m_MemBar[flag][i]+iMemBarUsed;
         if (iMemBarUsed + nextFrameSize > BUFFER8) {
             i++;
-            if (demuxer->m_MemBar[i] == NULL) {
-                demuxer->m_MemBar[i] = (unsigned char*)MALLOC(BUFFER8*sizeof(unsigned char));
+            if (demuxer->m_MemBar[flag][i] == NULL) {
+                demuxer->m_MemBar[flag][i] = (unsigned char*)MALLOC(BUFFER8*sizeof(unsigned char));
             }
-            bucket->data = demuxer->m_MemBar[i];
+            bucket->data = demuxer->m_MemBar[flag][i];
             iMemBarUsed = 0;
         }
         nextFrameSize = demuxer->GetOneFrame(bucket);
@@ -66,13 +72,14 @@ void* Demuxer::Loop(void *arg) {
         frame_num++;
 #endif//_DEBUG_
     }
+    demuxer->m_sQueue->Push(&bucket);
     if (nextFrameSize == 0) {
         bucket->size = 0;
         demuxer->m_sQueue->Push(&bucket);
     }
     demuxer->Reset();
 #ifdef _DEBUG_
-    printf("---------->Frame: %d\n\n", frame_num);
+    printf("---------->Input %d Frames \n", frame_num);
 #endif//_DEBUG_
     delete bucket;
     return NULL;
@@ -84,9 +91,13 @@ void Demuxer::ClearMem() {
     delete m_sQueue;
     m_sQueue = NULL;
     for (int i=0; i<5; i++) {
-        if (m_MemBar[i] != NULL) {
-            free(m_MemBar[i]);
-            m_MemBar[i] = NULL;
+        if (m_MemBar[0][i] != NULL) {
+            free(m_MemBar[0][i]);
+            m_MemBar[0][i] = NULL;
+        }
+        if (m_MemBar[1][i] != NULL) {
+            free(m_MemBar[1][i]);
+            m_MemBar[1][i] = NULL;
         }
     }
 }

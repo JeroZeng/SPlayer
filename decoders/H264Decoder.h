@@ -4,6 +4,7 @@
 #include "../base/Decoder.h"
 #include "openh264/codec_api.h"
 #include "../SPlayer.h"
+#define _DUMP_264_FILE_
 
 class H264Decoder: public Decoder {
 
@@ -18,6 +19,9 @@ private:
     ISVCDecoder *m_pDecoder;
     SDecodingParam m_sDecParam;
     SBufferInfo  m_sDstBufInfo;
+#ifdef _DUMP_264_FILE_
+    FILE *m_pDumpFile;
+#endif
 };
 
 #endif//_H264_DECODER_H_
