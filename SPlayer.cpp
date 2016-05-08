@@ -5,17 +5,36 @@
 #include "decoders/H264Decoder.h"
 #include "renders/PCRender.h"
 
+enum FileType {
+    Type_YUV = 'y' + 'u' + 'v',
+    Type_264 = '2' + '6' + '4',
+};
+
 SPlayer::SPlayer(const char *url){
+    int urlSize = strlen(url);
+    int fileType = 0;
+    int i = urlSize;
     m_chUrl = url;
-    //demuxer = new Demuxer();
-    //demuxer = new Mp4Demuxer();
-#if 0
-    demuxer = new RawYUV();
-    decoder = new Decoder();
-#else
-    demuxer = new H264Demuxer();
-    decoder = new H264Decoder(this);
-#endif
+    while(i>0) {
+        i--;
+        if (m_chUrl[i] == '.') {
+            while (i<urlSize) {
+                i++;
+                fileType += m_chUrl[i];
+            }
+            break;
+        }
+    }
+    switch(fileType) {
+        case Type_YUV: {
+            demuxer = new RawYUV();
+            decoder = new Decoder();
+        } break;
+        case Type_264: {
+            demuxer = new H264Demuxer();
+            decoder = new H264Decoder(this);
+        } break;
+    }
     render  = new Render();
     render  = new PCRender(this);
 }
