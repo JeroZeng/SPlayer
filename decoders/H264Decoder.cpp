@@ -25,6 +25,7 @@ int H264Decoder::Init() {
     m_sDecParam.uiTargetDqLayer = (uint8_t) - 1;
     m_sDecParam.eEcActiveIdc = ERROR_CON_SLICE_COPY;
     m_sDecParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_DEFAULT;
+    m_sDecParam.bParseOnly = false;
 
     WelsCreateDecoder(&m_pDecoder);
     if (NULL == m_pDecoder) {

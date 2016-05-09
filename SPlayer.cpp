@@ -32,7 +32,7 @@ SPlayer::SPlayer(const char *url){
         } break;
         case Type_264: {
             demuxer = new H264Demuxer();
-            //decoder = new H264Decoder(this);
+            decoder = new H264Decoder(this);
         } break;
     }
     //render  = new Render();

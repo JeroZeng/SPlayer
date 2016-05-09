@@ -45,6 +45,8 @@ class SBucket {
 public:
     unsigned char *data;
     int   size;
+public:
+    SBucket(){ data = NULL; size = 0; }
 };
 
 class SNode{

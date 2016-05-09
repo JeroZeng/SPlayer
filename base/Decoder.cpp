@@ -1,6 +1,7 @@
 #include "Decoder.h"
 
 Decoder::Decoder(){
+    memset(m_MemBar, NULL, sizeof(m_MemBar));
 }
 
 Decoder::~Decoder(){
