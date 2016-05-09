@@ -8,7 +8,7 @@ typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
 #endif
 
-#define BUFFER_SIZE (1 << 26)
+#define BUFFER_SIZE (1 << 23)
 
 class H264Demuxer: public Demuxer {
 public:

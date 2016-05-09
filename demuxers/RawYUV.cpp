@@ -13,7 +13,7 @@ RawYUV::~RawYUV() {
 }
 
 int RawYUV::Open(const char *url) {
-    m_pFile = fopen(url, "r");
+    m_pFile = fopen(url, "rb");
     if (m_pFile != (FILE*)NULL) {
         printf("---------->Open YUV\n\n");
         SetVideoProperty();

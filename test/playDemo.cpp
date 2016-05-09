@@ -22,8 +22,8 @@ SWindow* createWindow(SPlayer *player) {
         return NULL;
     }
     glfwMakeContextCurrent(win);
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(0.f, 0.f, 0.f, 0.f);
+    //glClear(GL_COLOR_BUFFER_BIT);
     glfwSwapBuffers(win);
     glfwMakeContextCurrent(NULL);
     GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
