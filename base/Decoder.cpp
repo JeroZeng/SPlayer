@@ -14,8 +14,11 @@ int Decoder::Start(SQueue *queue){
 
     m_sQueue = queue;
     m_sRenderQueue = new RenderQueue(RQ_SIZE);
+#ifdef _WIN32
+    m_thread = (HANDLE)_beginthreadex(NULL, 0, (Decoder::Loop), (void*)this, 0, NULL);
+#else
     pthread_create(&m_thread, NULL, Decoder::Loop, (void*)this);
-
+#endif
     return 0;
 }
 
@@ -32,7 +35,11 @@ int Decoder::DecodeOneFrame(SBucket *db, SBucket *rb) {
     return 0;
 }
 
+#ifdef _WIN32
+unsigned WINAPI Decoder::Loop(void *arg) {
+#else
 void* Decoder::Loop(void *arg){
+#endif
     Decoder *decoder = (Decoder*)arg;
     SBucket *db = new SBucket();
     decoder->m_sQueue->Pop(&db);
@@ -79,11 +86,19 @@ void* Decoder::Loop(void *arg){
 #endif
     delete rb; rb = NULL;
     delete db; db = NULL;
+#ifdef _WIN32
+    return 0;
+#else
     return NULL;
+#endif
 }
 
 int Decoder::Stop() {
+#ifdef _WIN32
+    return TerminateThread(m_thread, 0);
+#else
     return pthread_kill(m_thread, SIGQUIT);
+#endif
 }
 
 void Decoder::ClearMem() {

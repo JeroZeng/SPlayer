@@ -7,5 +7,8 @@ add_subdirectory(demuxers)
 add_subdirectory(decoders)
 add_subdirectory(renders)
 
+include_directories(${PROJECT_SOURCE_DIR}/ex_lib)
+include_directories(${PROJECT_SOURCE_DIR}/ex_lib/GLFW)
+
 add_executable(playDemo test/playDemo.cpp
                         SPlayer.cpp)

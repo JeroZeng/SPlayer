@@ -22,8 +22,11 @@ int Demuxer::Open(const char *url){
 int Demuxer::Start(){
 
     m_sQueue = new SQueue(10);
+#ifdef _WIN32
+    m_thread = (HANDLE)_beginthreadex(NULL, 0, Demuxer::Loop, (void*)this, 0, NULL);
+#else
     pthread_create(&m_thread, NULL, Demuxer::Loop, (void*)this);
-
+#endif
     return 0;
 }
 
@@ -31,7 +34,11 @@ int Demuxer::GetOneFrame(SBucket *bucket){
     return 0;
 }
 
-void* Demuxer::Loop(void *arg) {
+#ifdef _WIN32
+unsigned WINAPI Demuxer::Loop(void *arg) {
+#else
+void* Demuxer::Loop(void *arg){
+#endif
     Demuxer *demuxer = (Demuxer*)arg;
     int i = 0; bool flag = 0;
 #ifdef _DEBUG_
@@ -82,7 +89,11 @@ void* Demuxer::Loop(void *arg) {
     printf("---------->Input %d Frames \n", frame_num);
 #endif//_DEBUG_
     delete bucket;
+#ifdef _WIN32
+    return 0;
+#else
     return NULL;
+#endif
 }
 
 void Demuxer::ClearMem() {
@@ -103,7 +114,11 @@ void Demuxer::ClearMem() {
 }
 
 int Demuxer::Stop() {
+#ifdef _WIN32
+    return TerminateThread(&m_thread, 0);
+#else
     return pthread_kill(m_thread, SIGQUIT);
+#endif
 }
 
 void Demuxer::Reset() {

@@ -3,6 +3,11 @@
 
 #include "../base/demuxer.h"
 
+#ifdef _WIN32
+typedef unsigned char uint8_t;
+typedef unsigned int uint32_t;
+#endif
+
 #define BUFFER_SIZE (1 << 26)
 
 class H264Demuxer: public Demuxer {

@@ -26,7 +26,11 @@ public:
     void ClearMem();
     virtual void Reset();
 private:
+#ifdef _WIN32
+    static unsigned WINAPI Loop(void *arg);
+#else
     static void* Loop(void *arg);
+#endif
 private:
     int m_iFrameSize;
     unsigned char *m_MemBar[2][5];

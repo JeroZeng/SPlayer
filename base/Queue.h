@@ -1,15 +1,22 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 #include <stdio.h>
+#include <stdlib.h>
+#ifdef _WIN32
+#include <Windows.h>
+#else
 #include <pthread.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include <strings.h>
+#endif
 
 #define _DEBUG_
 #define MAX_QUEUE_LENGTH 8
 #define MALLOC malloc
-#if 1
+#ifdef _WIN32
+typedef CRITICAL_SECTION   SLock;
+typedef CONDITION_VARIABLE SCond;
+#else
 typedef pthread_mutex_t SLock;
 typedef pthread_cond_t  SCond;
 #endif
@@ -17,10 +24,18 @@ typedef pthread_cond_t  SCond;
 class CLock{
 public:
     CLock(SLock &lock): lc(lock){
+#ifdef _WIN32
+        EnterCriticalSection(&lc);
+#else
         pthread_mutex_lock(&lc);
+#endif
     }
     ~CLock(){
+#ifdef _WIN32
+        LeaveCriticalSection(&lc);
+#else
         pthread_mutex_unlock(&lc);
+#endif
     }
 private:
     SLock &lc;

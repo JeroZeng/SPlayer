@@ -23,11 +23,19 @@ void Render::SetFPS(double fps) {
 int Render::Start(RenderQueue *queue) {
 
     m_sRenderQueue = queue;
+#ifdef _WIN32
+    m_thread = (HANDLE)_beginthreadex(NULL, 0, Render::Loop, (void*)this, 0, NULL);
+#else
     pthread_create(&m_thread, NULL, Render::Loop, (void*)this);
+#endif
     return 0;
 }
 
-void* Render::Loop(void *arg) {
+#ifdef _WIN32
+unsigned WINAPI Render::Loop(void *arg) {
+#else
+void* Render::Loop(void *arg){
+#endif
     Render *render = (Render*)arg;
     render->SetStatus(StatusPlay);
     SBucket *bucket = new SBucket();
@@ -47,7 +55,11 @@ void* Render::Loop(void *arg) {
     render->m_sRenderQueue->StopReader();
     render->ClearScreen();
     delete bucket;
+#ifdef _WIN32
+    return 0;
+#else
     return NULL;
+#endif
 }
 
 int Render::Draw(SBucket *bucket) {
