@@ -6,8 +6,8 @@ Decoder::Decoder(){
 Decoder::~Decoder(){
 }
 
-void Decoder::Init(){
-
+int Decoder::Init(){
+    return  0;
 }
 
 int Decoder::Start(SQueue *queue){
@@ -37,13 +37,21 @@ void* Decoder::Loop(void *arg){
     SBucket *db = new SBucket();
     decoder->m_sQueue->Pop(&db);
     SBucket *rb = new SBucket();
+#ifdef _DEBUG_
+    int frame_num = 0;
+#endif
     if (decoder->m_iWidth*decoder->m_iHeight>0)
         decoder->m_MemBar[0] = (unsigned char*)MALLOC(decoder->m_iWidth*
                     decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);
     rb->data = decoder->m_MemBar[0];
-    for (int i=1; (i<RQ_SIZE+2)&&(db->size>0); i++) {
-        if (decoder->DecodeOneFrame(db, rb) == RES_OK)
+    for (int i=0; (i<RQ_SIZE+2)&&(db->size>0); ) {
+        if (decoder->DecodeOneFrame(db, rb) == RES_OK) {
             decoder->m_sRenderQueue->Push(&rb);
+            i++;
+#ifdef _DEBUG_
+            frame_num++;
+#endif
+        }
         if (decoder->m_iWidth*decoder->m_iHeight>0)
             decoder->m_MemBar[i] = (unsigned char*)MALLOC(decoder->m_iWidth*
                     decoder->m_iHeight*sizeof(unsigned char) * 3 / 2);
@@ -55,6 +63,9 @@ void* Decoder::Loop(void *arg){
             if(decoder->m_sRenderQueue->Push(&rb)) {
                 break;
             }
+#ifdef _DEBUG_
+            frame_num++;
+#endif
         }
         decoder->m_sQueue->Pop(&db);
     }
@@ -63,6 +74,9 @@ void* Decoder::Loop(void *arg){
         rb->size = 0;
         decoder->m_sRenderQueue->Push(&rb);
     }
+#ifdef _DEBUG_
+    printf("---------->Decode %d Frames.\n", frame_num);
+#endif
     delete rb; rb = NULL;
     delete db; db = NULL;
     return NULL;

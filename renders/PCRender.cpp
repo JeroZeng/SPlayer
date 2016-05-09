@@ -12,9 +12,18 @@ static const float vertices[] =
 PCRender::PCRender(SPlayer *player) {
     if (player != NULL)
         m_sPlayer = player;
+#ifdef _DUMP_YUV_FILE_
+    m_pDumpFile = fopen("dump.yuv", "wb");
+#endif
 }
 
 PCRender::~PCRender() {
+#ifdef _DUMP_YUV_FILE_
+    if(m_pDumpFile) {
+        fclose(m_pDumpFile);
+        m_pDumpFile = NULL;
+    }
+#endif
     glfwMakeContextCurrent(m_sWindow);
     if (glIsTexture(m_textures[0])) {
         glDeleteTextures(3, m_textures);
@@ -27,7 +36,6 @@ PCRender::~PCRender() {
     }
     glfwMakeContextCurrent(NULL);
 }
-
 
 GLuint PCRender::MakeShader(GLenum type, const char* text)
 {
@@ -109,10 +117,11 @@ int PCRender::Init(SWindow *win) {
     GLint vpos_loc, tbuf_loc;
     m_sWindow = win;
 
-    glfwSetWindowSize(m_sWindow, m_iWidth, m_iHeight);
-    GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
-;
-    glfwSetWindowPos(m_sWindow, (mode->width-m_iWidth)/2, (mode->height-m_iHeight)/2);
+    if (m_iWidth * m_iHeight > 0) {
+        glfwSetWindowSize(m_sWindow, m_iWidth, m_iHeight);
+        GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(m_sWindow, (mode->width-m_iWidth)/2, (mode->height-m_iHeight)/2);
+    }
 
     glfwMakeContextCurrent(m_sWindow);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -160,6 +169,11 @@ int PCRender::Init(SWindow *win) {
 }
 
 int PCRender::Draw(SBucket *bucket) {
+#ifdef _DUMP_YUV_FILE_
+    if (m_pDumpFile) {
+        fwrite(bucket->data, m_iWidth*m_iHeight*3/2, 1, m_pDumpFile);
+    }
+#endif
     glfwMakeContextCurrent(m_sWindow);
     glUseProgram(m_shaderProgram);
 

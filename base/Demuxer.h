@@ -29,7 +29,7 @@ private:
     static void* Loop(void *arg);
 private:
     int m_iFrameSize;
-    unsigned char *m_MemBar[5];
+    unsigned char *m_MemBar[2][5];
 };
 
 #endif//_DEMUXER_H_

@@ -15,7 +15,7 @@ void keyCallback(GLFWwindow *window, int key, int scancode,
 SWindow* createWindow(SPlayer *player) {
     if (!glfwInit())
         return NULL;
-    SWindow* win = glfwCreateWindow(800, 600, "SPlayer", NULL, NULL);
+    SWindow* win = glfwCreateWindow(640, 360, "SPlayer", NULL, NULL);
     if (!win) {
         printf("Create Window Failed\n");
         glfwTerminate();
@@ -26,7 +26,8 @@ SWindow* createWindow(SPlayer *player) {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwSwapBuffers(win);
     glfwMakeContextCurrent(NULL);
-    glfwSetWindowPos(win, 200, 200);
+    GLFWvidmode *mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
+    glfwSetWindowPos(win, mode->width/2-320, mode->height/2-180);
     glfwShowWindow(win);
     glfwSetKeyCallback(win, keyCallback);
     glfwSetWindowUserPointer(win, player);
