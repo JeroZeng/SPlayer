@@ -72,7 +72,7 @@ int Base::Resume() {
 
 int Base::WaitThreadClose() {
 #ifdef _WIN32
-    WaitForSingleObject(m_wait, INFINITE);
+    WaitForSingleObject(m_thread, INFINITE);
 #else
     pthread_join(m_thread, NULL);
 #endif
