@@ -49,6 +49,7 @@ int main(int argc, char *argv[]){
     player->Init(win);
     player->Play();
     waitForWindowClose(win);
+    player->Stop();
     delete player;
     return 0;
 }
