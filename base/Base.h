@@ -8,8 +8,8 @@ typedef HANDLE Sem_t;
 #else
 #include <pthread.h>
 #include <semaphore.h>
-typedef pthread_t SThread;
-typedef sem_t* Sem-t;
+typedef pthread_t Thread_t;
+typedef sem_t* Sem_t;
 #endif
 #define RES_OK 0
 #define USING_BASE using Base::Resume; \
