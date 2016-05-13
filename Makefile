@@ -18,8 +18,7 @@ SRC = test/playDemo.cpp							\
      renders/*.cpp
 
 ifeq ($(ARCH), $(MacOS))
-CXXFLAGS= -arch i386							\
-          -m32                                  
+CXXFLAGS= -arch i386 -m32
 LDFLAGS = -framework Cocoa 						\
           -framework IOKit						\
           -framework CoreVideo					\
@@ -36,47 +35,39 @@ else ifeq ($(ARCH), $(Linux))
 CXX = g++
 endif
 
-all : playDemo testQueue libbase libdemuxers libdecoders libsplayer
-
-playDemo : $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRC) -o playDemo
-
+all : playDemo
+.PHONY: all
 testQueue : test/testQueue.cpp base/Queue.cpp
 	clang++ test/testQueue.cpp base/Queue.cpp -o testQueue
 
-player: playDemo.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) playDemo.o -L. -lbase -ldecoders -ldemuxers -lrenders -lsplayer -o player
-playDemo.o: test/playDemo.cpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
-
-libsplayer: SPlayer.o
-	$(AR) rcs libsplayer.a SPlayer.o libbase.a libdemuxers.a libdecoders.a \
-librenders.a ex_lib/GLFW/lib/libglfw3.a ex_lib/openh264/libcommon.a ex_lib\
-/openh264/libdecoder.a
-SPlayer.o: SPlayer.cpp
-	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
-
-libbase : $(BASE_OBJS)
-	$(AR) rcs libbase.a $(BASE_OBJS)
+playDemo: libsplayer test/playDemo.cpp
+	$(CXX) -c $(CXXFLAGS) test/playDemo.cpp -o playDemo.o $(INCLUDES)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) playDemo.o -L. -lsplayer -o playDemo
 	rm *.o
+
+# make libsplayer
+libsplayer: SPlayer.cpp $(BASE_OBJS) $(DEMUXERS_OBJS) $(DECODERS_OBJS)\
+			$(RENDERS_OBJS)
+	$(CXX) -c $(CXXFLAGS) SPlayer.cpp -o SPlayer.o $(INCLUDES)
+	$(AR) rcs libsplayer.a SPlayer.o $(BASE_OBJS) $(DEMUXERS_OBJS)	$(DECODERS_OBJS) $(RENDERS_OBJS)
+	rm *.o
+
 %.o: base/%.cpp
 	#@echo "Compiling $<..."
 	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
 
-libdemuxers: $(DEMUXERS_OBJS)
-	$(AR) rcs libdemuxers.a $(DEMUXERS_OBJS)
-	rm *.o
 %.o: demuxers/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
 
-libdecoders: $(DECODERS_OBJS)
-	$(AR) rcs libdecoders.a $(DECODERS_OBJS)
-	rm *.o
 %.o: decoders/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
 
-librenders: $(RENDERS_OBJS)
-	$(AR) rcs librenders.a $(RENDERS_OBJS)
-	rm *.o
 %.o: renders/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@ $(INCLUDES)
+
+.PHONY: clean
+clean:
+	rm -rf *.o
+	rm -rf *.a
+	rm -rf playDemo
+	rm -rf testQueue
