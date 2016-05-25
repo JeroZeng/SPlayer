@@ -8,6 +8,7 @@
 enum FileType {
     Type_YUV = 'y' + 'u' + 'v',
     Type_264 = '2' + '6' + '4',
+    Type_MP4 = 'm' + 'p' + '4',
 };
 
 SPlayer::SPlayer(const char *url){
@@ -32,6 +33,10 @@ SPlayer::SPlayer(const char *url){
         } break;
         case Type_264: {
             demuxer = new H264Demuxer();
+            decoder = new H264Decoder(this);
+        } break;
+        case Type_MP4: {
+            demuxer = new Mp4Demuxer();
             decoder = new H264Decoder(this);
         } break;
     }

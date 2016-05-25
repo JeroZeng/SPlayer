@@ -2,3 +2,5 @@
 bin/
 playDemo
 testQueue
+*.mp4
+*.264
