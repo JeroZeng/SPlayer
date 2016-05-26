@@ -3,6 +3,7 @@
 
 #include "../base/Demuxer.h"
 #include <vector>
+#include "inttypes.h"
 
 static union ____indian_swap{
     unsigned char byte[4];
@@ -370,7 +371,7 @@ public:
     }
 
     int read_uint32_lit(){
-        int k = 0;
+        unsigned int k = 0;
         fread(&k, sizeof(k), 1, m_pFile);
         indianA.size = k;
         for(int i = 0, j = 3; i < 4; i++, j--)
