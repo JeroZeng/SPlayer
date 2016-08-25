@@ -9,9 +9,12 @@ public:
     ~TSDemuxer();
     int Open(const char *url);
     int GetOneFrame(SBucket *bucket);
+private:
+    int DemuxPacket(SBucket *bucket);
 
 public:
-    unsigned char m_Packet[192];
+    unsigned char m_buf[192];
+    int m_iBufLen;
 
 private:
     FILE *m_pFile;

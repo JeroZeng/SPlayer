@@ -3,7 +3,9 @@
 
 #include "../base/Demuxer.h"
 #include <vector>
+#ifdef _WIN32
 #include "inttypes.h"
+#endif
 
 static union ____indian_swap{
     unsigned char byte[4];

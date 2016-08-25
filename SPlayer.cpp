@@ -2,6 +2,7 @@
 #include "demuxers/Mp4Demuxer.h"
 #include "demuxers/RawYUV.h"
 #include "demuxers/H264Demuxer.h"
+#include "demuxers/Mpegts.h"
 #include "decoders/H264Decoder.h"
 #include "renders/PCRender.h"
 
@@ -9,6 +10,7 @@ enum FileType {
     Type_YUV = 'y' + 'u' + 'v',
     Type_264 = '2' + '6' + '4',
     Type_MP4 = 'm' + 'p' + '4',
+    TYPE_TS = 't' + 's',
 };
 
 SPlayer::SPlayer(const char *url){
@@ -39,6 +41,10 @@ SPlayer::SPlayer(const char *url){
             demuxer = new Mp4Demuxer();
             decoder = new H264Decoder(this);
         } break;
+        case TYPE_TS: {
+            demuxer = new TSDemuxer();
+            decoder = new H264Decoder(this);
+        }
     }
     //render  = new Render();
     render  = new PCRender(this);

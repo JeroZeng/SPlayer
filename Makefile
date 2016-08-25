@@ -6,7 +6,7 @@ ARCH = $(shell uname -s)
 INCLUDES = -Iex_lib -Iex_lib/GLFW
 
 BASE_OBJS = Base.o Queue.o Demuxer.o Decoder.o Render.o
-DEMUXERS_OBJS = RawYUV.o H264Demuxer.o Mp4Demuxer.o
+DEMUXERS_OBJS = RawYUV.o H264Demuxer.o Mp4Demuxer.o Mpegts.o
 DECODERS_OBJS = H264Decoder.o
 RENDERS_OBJS = PCRender.o glad.o
 
