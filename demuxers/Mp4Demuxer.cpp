@@ -6,8 +6,11 @@
 Mp4Demuxer::Mp4Demuxer(){
     m_iReadAvc1 = 2;
     m_iChunkIndex = 0;
+    m_iSampleNum = 0;
+    m_uiVReaderPos = 0;
     m_iNextFrameSize = 0;
     m_iNaluTotalSize = 0;
+    memset(&moov, 0, sizeof(moov));
 }
 
 Mp4Demuxer::~Mp4Demuxer(){
@@ -18,7 +21,7 @@ Mp4Demuxer::~Mp4Demuxer(){
 }
 
 int Mp4Demuxer::Open(const char *url){
-    m_pFile = fopen(url, "r");
+    m_pFile = fopen(url, "rb");
     if (m_pFile == (FILE*)NULL) {
         return -1;
     }
